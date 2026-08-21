@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Ada {
     public static void main(String[] args) {
@@ -9,7 +10,7 @@ public class Ada {
                         " / ___ \\ | |_| | / ___ \\ \n" +
                         "/_/   \\_\\\\____/ /_/   \\_\\\n";
         Scanner scanner = new Scanner(System.in);
-        Task[] tasks = new Task[100];
+        ArrayList<Task> tasks = new ArrayList<>();
         int index = 0;
 
         System.out.println("---------------------------------------------------");
@@ -31,7 +32,7 @@ public class Ada {
                     System.out.println("Here are the tasks in your list:");
                     for (int i = 0; i < index; i++) {
                         int j = i + 1;
-                        System.out.println(j + ". " + tasks[i].toString());
+                        System.out.println(j + ". " + tasks.get(i).toString());
                     }
                     System.out.println("---------------------------------------------------");
                 } else if (input.startsWith("mark")) {
@@ -51,10 +52,10 @@ public class Ada {
                     if(num < 1 || num > index){
                         throw new AdaException("This task does not exist. Please enter a valid task number.");
                     }
-                    tasks[num - 1].markDone();
+                    tasks.get(num - 1).markDone();
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks[num - 1].toString());
+                    System.out.println("  " + tasks.get(num - 1).toString());
                     System.out.println("---------------------------------------------------");
                 } else if (input.startsWith("unmark")) {
                     String afterUnmark = input.substring(6).trim();
@@ -73,10 +74,10 @@ public class Ada {
                     if(num < 1 || num > index){
                         throw new AdaException("This task does not exist. Please enter a valid task number.");
                     }
-                    tasks[num - 1].markUndone();
+                    tasks.get(num - 1).markUndone();
                     System.out.println("---------------------------------------------------");
                     System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks[num - 1].toString());
+                    System.out.println("  " + tasks.get(num - 1).toString());
                     System.out.println("---------------------------------------------------");
                 } else if (input.startsWith("todo")) {
                     String description = input.substring(4).trim();
@@ -87,7 +88,8 @@ public class Ada {
                         throw new AdaException("Wrong format. Use exactly one space: todo <>");
                     }
                     Task todo = new Todo(description);
-                    tasks[index++] = todo;
+                    tasks.add(todo);
+                    index ++;
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("  " + todo.toString());
@@ -114,7 +116,8 @@ public class Ada {
                         throw new AdaException("Deadline time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
                     }
                     Task deadline = new Deadline(description, by);
-                    tasks[index++] = deadline;
+                    tasks.add(deadline);
+                    index ++;
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("  " + deadline.toString());
@@ -152,12 +155,39 @@ public class Ada {
                         throw new AdaException("Ending time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
                     }
                     Task event = new Event(description, from, to);
-                    tasks[index++] = event;
+                    tasks.add(event);
+                    index ++;
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("  " + event.toString());
                     System.out.println(" Now you have " + index + " tasks in the list");
                     System.out.println("---------------------------------------------------");
+                } else if(input.startsWith("delete")){
+                    String afterDelete = input.substring(6).trim();
+                    if(afterDelete.isEmpty()){
+                        throw new AdaException("Please provide a task number.");
+                    }
+                    if(input.charAt(6) != ' '){
+                        throw new AdaException("Wrong format. Use exactly one space: delete <>");
+                    }
+                    int num;
+                    try{
+                        num = Integer.parseInt(afterDelete);
+                    }catch(NumberFormatException e){
+                        throw new AdaException("Please input a valid integer number.");
+                    }
+                    if(num < 1 || num > index){
+                        throw new AdaException("This task does not exist. Please enter a valid task number.");
+                    }
+                    Task taskT = tasks.get(num - 1);
+                    tasks.remove(num - 1);
+                    index --;
+                    System.out.println("---------------------------------------------------");
+                    System.out.println(" Noted. I've removed this task:");
+                    System.out.println("  " + taskT.toString());
+                    System.out.println(" Now you have " + index + " tasks in the list");
+                    System.out.println("---------------------------------------------------");
+
                 } else {
                     System.out.println("---------------------------------------------------");
                     System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");
