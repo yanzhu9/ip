@@ -19,6 +19,7 @@ public class Ada {
         System.out.println("---------------------------------------------------");
         while(true) {
             String input = scanner.nextLine();
+
             if (input.equals("bye")) {
                 System.out.println("---------------------------------------------------");
                 System.out.println(" Bye. Hope to see you again soon!");
@@ -29,8 +30,7 @@ public class Ada {
                 System.out.println("Here are the tasks in your list:");
                 for(int i = 0; i < index; i ++){
                     int j = i + 1;
-                    String done = tasks[i].isDone() ? "[X] " : "[ ] ";
-                    System.out.println(j + ". " + done + tasks[i].getDescription());
+                    System.out.println(j + ". " +tasks[i].toString());
                 }
                 System.out.println("---------------------------------------------------");
             }else if(input.startsWith("mark")){
@@ -38,16 +38,50 @@ public class Ada {
                 tasks[num - 1].markDone();
                 System.out.println("---------------------------------------------------");
                 System.out.println(" Nice! I've marked this task as done:");
-                System.out.println("  [X] " + tasks[num - 1].getDescription());
+                System.out.println("  " + tasks[num - 1].toString());
                 System.out.println("---------------------------------------------------");
             }else if(input.startsWith("unmark")){
                 int num = Integer.parseInt(input.substring(7));
                 tasks[num - 1].markUndone();
                 System.out.println("---------------------------------------------------");
                 System.out.println(" OK, I've marked this task as not done yet:");
-                System.out.println("  [ ] " + tasks[num - 1].getDescription());
+                System.out.println("  " + tasks[num - 1].toString());
                 System.out.println("---------------------------------------------------");
-            }else {
+            }else if(input.startsWith("todo")) {
+                Task todo = new Todo(input.substring(5));
+                tasks[index ++] = todo;
+                System.out.println("---------------------------------------------------");
+                System.out.println(" Got it. I've added this task:");
+                System.out.println("  " + todo.toString());
+                System.out.println(" Now you have " + index + " tasks in the list");
+                System.out.println("---------------------------------------------------");
+            }else if(input.startsWith("deadline")) {
+                String content = input.substring(9);
+                int byIndex = content.indexOf(" /by");
+                String description = content.substring(0, byIndex);
+                String by = content.substring(byIndex + 5);
+                Task deadline = new Deadline(description,by);
+                tasks[index ++] = deadline;
+                System.out.println("---------------------------------------------------");
+                System.out.println(" Got it. I've added this task:");
+                System.out.println("  " + deadline.toString());
+                System.out.println(" Now you have " + index + " tasks in the list");
+                System.out.println("---------------------------------------------------");
+            }else if(input.startsWith("event")) {
+                String content = input.substring(6);
+                int fromIndex = content.indexOf(" /from");
+                int toIndex = content.indexOf(" /to");
+                String description = content.substring(0, fromIndex);
+                String from = content.substring(fromIndex + 7, toIndex);
+                String to = content.substring(toIndex + 5);
+                Task event = new Event(description,from,to);
+                tasks[index ++] = event;
+                System.out.println("---------------------------------------------------");
+                System.out.println(" Got it. I've added this task:");
+                System.out.println("  " + event.toString());
+                System.out.println(" Now you have " + index + " tasks in the list");
+                System.out.println("---------------------------------------------------");
+            }else{
                 Task task = new Task(input);
                 tasks[index ++ ] = task;
                 System.out.println("---------------------------------------------------");
