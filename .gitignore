@@ -27,3 +27,6 @@ build
 
 # Ignore Kotlin plugin data
 .kotlin
+
+*.jar
+build/libs/
