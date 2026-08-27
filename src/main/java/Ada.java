@@ -10,8 +10,8 @@ public class Ada {
                         " / ___ \\ | |_| | / ___ \\ \n" +
                         "/_/   \\_\\\\____/ /_/   \\_\\\n";
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> tasks = new ArrayList<>();
-        int index = 0;
+        Storage storage = new Storage();
+        ArrayList<Task> tasks = storage.load();
 
         System.out.println("---------------------------------------------------");
         System.out.print(banner);
@@ -30,7 +30,7 @@ public class Ada {
                 } else if (input.equals("list")) {
                     System.out.println("---------------------------------------------------");
                     System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < index; i++) {
+                    for (int i = 0; i < tasks.size(); i++) {
                         int j = i + 1;
                         System.out.println(j + ". " + tasks.get(i).toString());
                     }
@@ -49,10 +49,11 @@ public class Ada {
                     }catch(NumberFormatException e){
                         throw new AdaException("Please input a valid integer number.");
                     }
-                    if(num < 1 || num > index){
+                    if(num < 1 || num > tasks.size()){
                         throw new AdaException("This task does not exist. Please enter a valid task number.");
                     }
                     tasks.get(num - 1).markDone();
+                    storage.save(tasks);
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Nice! I've marked this task as done:");
                     System.out.println("  " + tasks.get(num - 1).toString());
@@ -71,10 +72,11 @@ public class Ada {
                     }catch(NumberFormatException e){
                         throw new AdaException("Please input a valid integer number.");
                     }
-                    if(num < 1 || num > index){
+                    if(num < 1 || num > tasks.size()){
                         throw new AdaException("This task does not exist. Please enter a valid task number.");
                     }
                     tasks.get(num - 1).markUndone();
+                    storage.save(tasks);
                     System.out.println("---------------------------------------------------");
                     System.out.println(" OK, I've marked this task as not done yet:");
                     System.out.println("  " + tasks.get(num - 1).toString());
@@ -89,11 +91,11 @@ public class Ada {
                     }
                     Task todo = new Todo(description);
                     tasks.add(todo);
-                    index ++;
+                    storage.save(tasks);
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("  " + todo.toString());
-                    System.out.println(" Now you have " + index + " tasks in the list");
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
                     System.out.println("---------------------------------------------------");
                 } else if (input.startsWith("deadline")) {
                     String content = input.substring(8).trim();
@@ -117,11 +119,11 @@ public class Ada {
                     }
                     Task deadline = new Deadline(description, by);
                     tasks.add(deadline);
-                    index ++;
+                    storage.save(tasks);
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("  " + deadline.toString());
-                    System.out.println(" Now you have " + index + " tasks in the list");
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
                     System.out.println("---------------------------------------------------");
                 } else if (input.startsWith("event")) {
                     String content = input.substring(5).trim();
@@ -156,11 +158,11 @@ public class Ada {
                     }
                     Task event = new Event(description, from, to);
                     tasks.add(event);
-                    index ++;
+                    storage.save(tasks);
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Got it. I've added this task:");
                     System.out.println("  " + event.toString());
-                    System.out.println(" Now you have " + index + " tasks in the list");
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
                     System.out.println("---------------------------------------------------");
                 } else if(input.startsWith("delete")){
                     String afterDelete = input.substring(6).trim();
@@ -176,16 +178,16 @@ public class Ada {
                     }catch(NumberFormatException e){
                         throw new AdaException("Please input a valid integer number.");
                     }
-                    if(num < 1 || num > index){
+                    if(num < 1 || num > tasks.size()){
                         throw new AdaException("This task does not exist. Please enter a valid task number.");
                     }
                     Task taskT = tasks.get(num - 1);
                     tasks.remove(num - 1);
-                    index --;
+                    storage.save(tasks);
                     System.out.println("---------------------------------------------------");
                     System.out.println(" Noted. I've removed this task:");
                     System.out.println("  " + taskT.toString());
-                    System.out.println(" Now you have " + index + " tasks in the list");
+                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
                     System.out.println("---------------------------------------------------");
 
                 } else {

@@ -21,4 +21,8 @@ public class Task{
         String done = isDone() ? "[X] " : "[ ] ";
         return done + this.description;
     }
+
+    public String toFileFormat(){
+        return (this.isDone ? "1" : "0") + " | " + this.description;
+    }
 }
