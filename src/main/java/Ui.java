@@ -1,0 +1,93 @@
+import java.util.Scanner;
+import java.util.List;
+
+public class Ui {
+    private final Scanner scanner;
+    private static final String LINE = "---------------------------------------------------";
+    private static final String BANNER =
+            "    _     ____      _    \n" +
+                    "   / \\   |  _ \\    / \\   \n" +
+                    "  / _ \\  | | | |  / _ \\  \n" +
+                    " / ___ \\ | |_| | / ___ \\ \n" +
+                    "/_/   \\_\\\\____/ /_/   \\_\\\n";
+    public Ui(){
+        scanner = new Scanner(System.in);
+    }
+
+    public void showWelcome(){
+        System.out.println(LINE);
+        System.out.print(BANNER);
+        System.out.println(" Hello, I'm Ada.");
+        System.out.println(" What can I do for you?");
+        System.out.println(LINE);
+    }
+    public String readCommand(){
+        return scanner.nextLine();
+    }
+
+    public void showBye() {
+        System.out.println(LINE);
+        System.out.println(" Bye. Hope to see you again soon!");
+        System.out.println(LINE);
+    }
+
+    public void showTaskList(List<Task> tasks) {
+        System.out.println(LINE);
+        System.out.println("Here are the tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + ". " + tasks.get(i));
+        }
+        System.out.println(LINE);
+    }
+
+    public void showMarkDone(Task task) {
+        System.out.println(LINE);
+        System.out.println(" Nice! I've marked this task as done:");
+        System.out.println("  " + task);
+        System.out.println(LINE);
+    }
+
+    public void showMarkUndone(Task task) {
+        System.out.println(LINE);
+        System.out.println(" OK, I've marked this task as not done yet:");
+        System.out.println("  " + task);
+        System.out.println(LINE);
+    }
+
+    public void showAddTask(Task task, int total) {
+        System.out.println(LINE);
+        System.out.println(" Got it. I've added this task:");
+        System.out.println("  " + task);
+        System.out.println(" Now you have " + total + " tasks in the list");
+        System.out.println(LINE);
+    }
+
+    public void showDeleteTask(Task task, int total) {
+        System.out.println(LINE);
+        System.out.println(" Noted. I've removed this task:");
+        System.out.println("  " + task);
+        System.out.println(" Now you have " + total + " tasks in the list");
+        System.out.println(LINE);
+    }
+
+    public void showUnknownCommand() {
+        System.out.println(LINE);
+        System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");
+        System.out.println(LINE);
+    }
+
+    public void showDateTimeErrorDeadline() {
+        System.out.println("Oops! Invalid date format.");
+        System.out.println("Please use format yyyy-MM-dd (e.g. 2026-08-27) or yyyy-MM-dd HHmm (e.g. 2026-08-27 1800)");
+    }
+
+    public void showDateTimeErrorEvent() {
+        System.out.println("Oops! Invalid date format.");
+        System.out.println("Please use format yyyy-MM-dd (e.g. 2026-08-27) or yyyy-MM-dd HHmm (e.g. 2026-08-27 1800) for /from.");
+        System.out.println("Please use format yyyy-MM-dd HHmm (e.g. 2026-08-27 1800) or HHmm (e.g. 1800) for /to");
+    }
+
+    public void showError(String msg) {
+        System.out.println(msg);
+    }
+}
