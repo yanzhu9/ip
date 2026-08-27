@@ -1,3 +1,5 @@
+package ada;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,7 +8,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Storage {
-    private static final String FILE_PATH = "./data/Ada.txt";
+    private static final String FILE_PATH = "./data/Ada.Ada.txt";
 
     public Storage() {
         File dataFolder = new File("./data");

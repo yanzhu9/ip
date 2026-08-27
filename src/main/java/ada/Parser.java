@@ -1,3 +1,5 @@
+package ada;
+
 public class Parser {
 
     public static class CommandInfo {
@@ -53,7 +55,7 @@ public class Parser {
 
         if (input.startsWith("todo")) {
             String desc = input.substring(4).trim();
-            if (desc.isEmpty()) throw new AdaException("Todo description can not be empty. Please input task content.");
+            if (desc.isEmpty()) throw new AdaException("Ada.Todo description can not be empty. Please input task content.");
             if (input.charAt(4) != ' ') throw new AdaException("Wrong format. Use exactly one space: todo <>");
             CommandInfo ci = new CommandInfo("todo");
             ci.description = desc;
@@ -62,14 +64,14 @@ public class Parser {
 
         if (input.startsWith("deadline")) {
             String content = input.substring(8).trim();
-            if (content.isEmpty()) throw new AdaException("Deadline can not be empty. Please input task content.");
+            if (content.isEmpty()) throw new AdaException("Ada.Deadline can not be empty. Please input task content.");
             if (input.charAt(8) != ' ') throw new AdaException("Wrong format. Use exactly one space: deadline <>");
             int byIdx = content.indexOf(" /by");
             if (byIdx == -1) throw new AdaException("Missing marker '/by'. Please follow format: deadline xxx /by xxx.");
             String desc = content.substring(0, byIdx);
-            if (desc.isEmpty()) throw new AdaException("Deadline description can not be empty. Please input task description.");
+            if (desc.isEmpty()) throw new AdaException("Ada.Deadline description can not be empty. Please input task description.");
             String by = content.substring(byIdx + 4).trim();
-            if (by.isEmpty()) throw new AdaException("Deadline time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
+            if (by.isEmpty()) throw new AdaException("Ada.Deadline time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
             CommandInfo ci = new CommandInfo("deadline");
             ci.description = desc;
             ci.by = by;
@@ -78,7 +80,7 @@ public class Parser {
 
         if (input.startsWith("event")) {
             String content = input.substring(5).trim();
-            if (content.isEmpty()) throw new AdaException("Event can not be empty. Please input task content.");
+            if (content.isEmpty()) throw new AdaException("Ada.Event can not be empty. Please input task content.");
             if (input.charAt(5) != ' ') throw new AdaException("Wrong format. Use exactly one space: event <>");
             int fromIdx = content.indexOf(" /from");
             int toIdx = content.indexOf(" /to");
@@ -86,7 +88,7 @@ public class Parser {
             if (toIdx == -1) throw new AdaException("Missing marker '/to'. Format: event xxx /from xxx /to xxx");
             if (fromIdx > toIdx) throw new AdaException("Wrong format.Marker order should be: event xxx /from xxx /to xxx");
             String desc = content.substring(0, fromIdx);
-            if (desc.isEmpty()) throw new AdaException("Event description can not be empty. Please input task description.");
+            if (desc.isEmpty()) throw new AdaException("Ada.Event description can not be empty. Please input task description.");
             String from = content.substring(fromIdx + 6, toIdx).trim();
             if (from.isEmpty()) throw new AdaException("Starting time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
             String to = content.substring(toIdx + 4).trim();

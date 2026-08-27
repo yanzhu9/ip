@@ -1,5 +1,5 @@
+import ada.Todo;
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TodoTest{
@@ -14,7 +14,7 @@ public class TodoTest{
     }
 
     /**
-     * checks the output of toString() in Todo class
+     * checks the output of toString() in Ada.Todo class
      */
     @Test
     public void TodoTest(){
