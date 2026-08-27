@@ -1,3 +1,8 @@
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -117,14 +122,28 @@ public class Ada {
                     if(by.isEmpty()){
                         throw new AdaException("Deadline time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
                     }
-                    Task deadline = new Deadline(description, by);
-                    tasks.add(deadline);
-                    storage.save(tasks);
-                    System.out.println("---------------------------------------------------");
-                    System.out.println(" Got it. I've added this task:");
-                    System.out.println("  " + deadline.toString());
-                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
-                    System.out.println("---------------------------------------------------");
+                    LocalDateTime byDateTime;
+                    try {
+                        if (by.contains(" ")) {
+                            DateTimeFormatter inputFull = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+                            byDateTime = LocalDateTime.parse(by, inputFull);
+                        } else {
+                            DateTimeFormatter inputDateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                            LocalDate datePart = LocalDate.parse(by, inputDateOnly);
+                            byDateTime = LocalDateTime.of(datePart, Deadline.STORAGE_DEFAULT_TIME);
+                        }
+                        Task deadline = new Deadline(description, byDateTime);
+                        tasks.add(deadline);
+                        storage.save(tasks);
+                        System.out.println("---------------------------------------------------");
+                        System.out.println(" Got it. I've added this task:");
+                        System.out.println("  " + deadline.toString());
+                        System.out.println(" Now you have " + tasks.size() + " tasks in the list");
+                        System.out.println("---------------------------------------------------");
+                    }catch (DateTimeException e){
+                        System.out.println("Oops! Invalid date format.");
+                        System.out.println("Please use format yyyy-MM‑dd (e.g. 2026‑08‑27) or yyyy‑MM‑dd HHmm (e.g. 2026‑08‑27 1800)");
+                    }
                 } else if (input.startsWith("event")) {
                     String content = input.substring(5).trim();
                     if(content.isEmpty()){
@@ -156,14 +175,39 @@ public class Ada {
                     if(to.isEmpty()){
                         throw new AdaException("Ending time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
                     }
-                    Task event = new Event(description, from, to);
-                    tasks.add(event);
-                    storage.save(tasks);
-                    System.out.println("---------------------------------------------------");
-                    System.out.println(" Got it. I've added this task:");
-                    System.out.println("  " + event.toString());
-                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
-                    System.out.println("---------------------------------------------------");
+                    try {
+                        LocalDateTime start;
+                        if (from.contains(" ")) {
+                            DateTimeFormatter inputFull = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+                            start = LocalDateTime.parse(from, inputFull);
+                        } else {
+                            DateTimeFormatter inputDateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                            LocalDate datePart = LocalDate.parse(from, inputDateOnly);
+                            start = LocalDateTime.of(datePart, Deadline.STORAGE_DEFAULT_TIME);
+                        }
+                        LocalDateTime end;
+                        String s = to.trim();
+                        if (s.contains("-")) {
+                            end = LocalDateTime.parse(to);
+                        } else {
+                            int hh = Integer.parseInt(s.substring(0, 2));
+                            int mm = Integer.parseInt(s.substring(2, 4));
+                            LocalTime endTime = LocalTime.of(hh, mm);
+                            end = LocalDateTime.of(start.toLocalDate(), endTime);
+                        }
+                        Task event = new Event(description, start, end);
+                        tasks.add(event);
+                        storage.save(tasks);
+                        System.out.println("---------------------------------------------------");
+                        System.out.println(" Got it. I've added this task:");
+                        System.out.println("  " + event.toString());
+                        System.out.println(" Now you have " + tasks.size() + " tasks in the list");
+                        System.out.println("---------------------------------------------------");
+                    }catch (DateTimeException e){
+                        System.out.println("Oops! Invalid date format.");
+                        System.out.println("Please use format yyyy-MM‑dd (e.g. 2026‑08‑27) or yyyy‑MM‑dd HHmm (e.g. 2026‑08‑27 1800) for /from.");
+                        System.out.println("Please use format yyyy‑MM‑dd HHmm (e.g. 2026‑08‑27 1800) or HHmm (e.g. 1800) for /to");
+                    }
                 } else if(input.startsWith("delete")){
                     String afterDelete = input.substring(6).trim();
                     if(afterDelete.isEmpty()){

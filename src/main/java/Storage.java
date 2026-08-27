@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -66,17 +67,18 @@ public class Storage {
             }
             return todo;
         } else if (type.equals("D")) {
-            String by = parts[3];
+            String byStr = parts[3];
+            LocalDateTime by = LocalDateTime.parse(byStr);
             Deadline d = new Deadline(description, by);
             if(isDone){
                 d.markDone();
             }
             return d;
         } else if (type.equals("E")) {
-            String period = parts[3];
-            String[] startEnd = period.split("-");
-            String start = startEnd[0].trim();
-            String end = startEnd[1].trim();
+            String startStr = parts[3].trim();
+            String endStr = parts[4].trim();
+            LocalDateTime start = LocalDateTime.parse(startStr);
+            LocalDateTime end = LocalDateTime.parse(endStr);
             Event e = new Event(description, start, end);
             if(isDone){
                 e.markDone();
