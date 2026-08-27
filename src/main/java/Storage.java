@@ -73,8 +73,10 @@ public class Storage {
             }
             return d;
         } else if (type.equals("E")) {
-            String start = parts[3];
-            String end = parts[4];
+            String period = parts[3];
+            String[] startEnd = period.split("-");
+            String start = startEnd[0].trim();
+            String end = startEnd[1].trim();
             Event e = new Event(description, start, end);
             if(isDone){
                 e.markDone();

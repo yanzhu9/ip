@@ -1,5 +1,4 @@
-T | 1 | A
-T | 0 | B
-T | 0 | C
-D | 0 | D
-E | 0 | E
+D | 1 | read | Aug 28th
+E | 0 | discuss the group project | Aug 27th 12pm - 1pm
+T | 0 | swim
+T | 0 | take a break
