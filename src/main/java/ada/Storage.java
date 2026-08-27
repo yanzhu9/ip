@@ -55,7 +55,7 @@ public class Storage {
         }
     }
 
-    private Task parseLineToTask(String line) {
+    Task parseLineToTask(String line) {
         // use '|' to split the String
         String[] parts = line.split(" \\| ");
         String type = parts[0];
