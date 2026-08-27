@@ -3,245 +3,124 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Ada {
-    public static void main(String[] args) {
-        String banner =
-                "    _     ____      _    \n" +
-                        "   / \\   |  _ \\    / \\   \n" +
-                        "  / _ \\  | | | |  / _ \\  \n" +
-                        " / ___ \\ | |_| | / ___ \\ \n" +
-                        "/_/   \\_\\\\____/ /_/   \\_\\\n";
-        Scanner scanner = new Scanner(System.in);
-        Storage storage = new Storage();
-        ArrayList<Task> tasks = storage.load();
+    private final Ui ui;
+    private final Storage storage;
+    private final TaskList taskList;
+    private final Parser parser;
 
-        System.out.println("---------------------------------------------------");
-        System.out.print(banner);
-        System.out.println(" Hello, I'm Ada.");
-        System.out.println(" What can I do for you?");
-        System.out.println("---------------------------------------------------");
-        while(true) {
+    public Ada() {
+        ui = new Ui();
+        storage = new Storage();
+        ArrayList<Task> loaded = storage.load();
+        taskList = new TaskList(loaded);
+        parser = new Parser();
+    }
+
+    public void run() {
+        ui.showWelcome();
+        while (true) {
             try {
-                String input = scanner.nextLine();
+                String input = ui.readCommand();
+                Parser.CommandInfo cmd = parser.parse(input);
 
-                if (input.equals("bye")) {
-                    System.out.println("---------------------------------------------------");
-                    System.out.println(" Bye. Hope to see you again soon!");
-                    System.out.println("---------------------------------------------------");
-                    break;
-                } else if (input.equals("list")) {
-                    System.out.println("---------------------------------------------------");
-                    System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < tasks.size(); i++) {
-                        int j = i + 1;
-                        System.out.println(j + ". " + tasks.get(i).toString());
-                    }
-                    System.out.println("---------------------------------------------------");
-                } else if (input.startsWith("mark")) {
-                    String afterMark = input.substring(4).trim();
-                    if(afterMark.isEmpty()){
-                        throw new AdaException("Please provide a task number.");
-                    }
-                    if(input.charAt(4) != ' '){
-                        throw new AdaException("Wrong format. Use exactly one space: mark <>");
-                    }
-                    int num;
-                    try{
-                        num = Integer.parseInt(afterMark);
-                    }catch(NumberFormatException e){
-                        throw new AdaException("Please input a valid integer number.");
-                    }
-                    if(num < 1 || num > tasks.size()){
-                        throw new AdaException("This task does not exist. Please enter a valid task number.");
-                    }
-                    tasks.get(num - 1).markDone();
-                    storage.save(tasks);
-                    System.out.println("---------------------------------------------------");
-                    System.out.println(" Nice! I've marked this task as done:");
-                    System.out.println("  " + tasks.get(num - 1).toString());
-                    System.out.println("---------------------------------------------------");
-                } else if (input.startsWith("unmark")) {
-                    String afterUnmark = input.substring(6).trim();
-                    if(afterUnmark.isEmpty()){
-                        throw new AdaException("Please provide a task number.");
-                    }
-                    if(input.charAt(6) != ' '){
-                        throw new AdaException("Wrong format. Use exactly one space: unmark <>");
-                    }
-                    int num;
-                    try{
-                        num = Integer.parseInt(afterUnmark);
-                    }catch(NumberFormatException e){
-                        throw new AdaException("Please input a valid integer number.");
-                    }
-                    if(num < 1 || num > tasks.size()){
-                        throw new AdaException("This task does not exist. Please enter a valid task number.");
-                    }
-                    tasks.get(num - 1).markUndone();
-                    storage.save(tasks);
-                    System.out.println("---------------------------------------------------");
-                    System.out.println(" OK, I've marked this task as not done yet:");
-                    System.out.println("  " + tasks.get(num - 1).toString());
-                    System.out.println("---------------------------------------------------");
-                } else if (input.startsWith("todo")) {
-                    String description = input.substring(4).trim();
-                    if(description.isEmpty()){
-                        throw new AdaException("Todo description can not be empty. Please input task content.");
-                    }
-                    if(input.charAt(4) != ' '){
-                        throw new AdaException("Wrong format. Use exactly one space: todo <>");
-                    }
-                    Task todo = new Todo(description);
-                    tasks.add(todo);
-                    storage.save(tasks);
-                    System.out.println("---------------------------------------------------");
-                    System.out.println(" Got it. I've added this task:");
-                    System.out.println("  " + todo.toString());
-                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
-                    System.out.println("---------------------------------------------------");
-                } else if (input.startsWith("deadline")) {
-                    String content = input.substring(8).trim();
-                    if(content.isEmpty()){
-                        throw new AdaException("Deadline can not be empty. Please input task content.");
-                    }
-                    if(input.charAt(8) != ' '){
-                        throw new AdaException("Wrong format. Use exactly one space: deadline <>");
-                    }
-                    int byIndex = content.indexOf(" /by");
-                    if(byIndex == -1){
-                        throw new AdaException("Missing marker '/by'. Please follow format: deadline xxx /by xxx.");
-                    }
-                    String description = content.substring(0, byIndex);
-                    if(description.isEmpty()){
-                        throw new AdaException("Deadline description can not be empty. Please input task description.");
-                    }
-                    String by = content.substring(byIndex + 4).trim();
-                    if(by.isEmpty()){
-                        throw new AdaException("Deadline time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
-                    }
-                    LocalDateTime byDateTime;
-                    try {
-                        if (by.contains(" ")) {
-                            DateTimeFormatter inputFull = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-                            byDateTime = LocalDateTime.parse(by, inputFull);
-                        } else {
-                            DateTimeFormatter inputDateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                            LocalDate datePart = LocalDate.parse(by, inputDateOnly);
-                            byDateTime = LocalDateTime.of(datePart, Deadline.STORAGE_DEFAULT_TIME);
+                switch (cmd.command) {
+                    case "bye":
+                        ui.showBye();
+                        return;
+                    case "list":
+                        ui.showTaskList(taskList.getAllTasks());
+                        break;
+                    case "mark":
+                        if (cmd.taskNum < 1 || cmd.taskNum > taskList.size()) {
+                            throw new AdaException("This task does not exist. Please enter a valid task number.");
                         }
-                        Task deadline = new Deadline(description, byDateTime);
-                        tasks.add(deadline);
-                        storage.save(tasks);
-                        System.out.println("---------------------------------------------------");
-                        System.out.println(" Got it. I've added this task:");
-                        System.out.println("  " + deadline.toString());
-                        System.out.println(" Now you have " + tasks.size() + " tasks in the list");
-                        System.out.println("---------------------------------------------------");
-                    }catch (DateTimeException e){
-                        System.out.println("Oops! Invalid date format.");
-                        System.out.println("Please use format yyyy-MM‑dd (e.g. 2026‑08‑27) or yyyy‑MM‑dd HHmm (e.g. 2026‑08‑27 1800)");
-                    }
-                } else if (input.startsWith("event")) {
-                    String content = input.substring(5).trim();
-                    if(content.isEmpty()){
-                        throw new AdaException("Event can not be empty. Please input task content.");
-                    }
-                    if(input.charAt(5) != ' '){
-                        throw new AdaException("Wrong format. Use exactly one space: event <>");
-                    }
-                    int fromIndex = content.indexOf(" /from");
-                    if(fromIndex == -1){
-                        throw new AdaException("Missing marker '/from'. Format: event xxx /from xxx /to xxx");
-                    }
-                    int toIndex = content.indexOf(" /to");
-                    if(toIndex == -1){
-                        throw new AdaException("Missing marker '/to'. Format: event xxx /from xxx /to xxx");
-                    }
-                    if(fromIndex > toIndex){
-                        throw new AdaException("Wrong format.Marker order should be: event xxx /from xxx /to xxx");
-                    }
-                    String description = content.substring(0, fromIndex);
-                    if(description.isEmpty()){
-                        throw new AdaException("Event description can not be empty. Please input task description.");
-                    }
-                    String from = content.substring(fromIndex + 6, toIndex).trim();
-                    if(from.isEmpty()){
-                        throw new AdaException("Starting time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
-                    }
-                    String to = content.substring(toIndex + 4).trim();
-                    if(to.isEmpty()){
-                        throw new AdaException("Ending time can not be empty. If you are not sure about the due date, enter 'not know' is also valid.");
-                    }
-                    try {
-                        LocalDateTime start;
-                        if (from.contains(" ")) {
-                            DateTimeFormatter inputFull = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-                            start = LocalDateTime.parse(from, inputFull);
-                        } else {
-                            DateTimeFormatter inputDateOnly = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                            LocalDate datePart = LocalDate.parse(from, inputDateOnly);
-                            start = LocalDateTime.of(datePart, Deadline.STORAGE_DEFAULT_TIME);
+                        taskList.markDone(cmd.taskNum - 1);
+                        storage.save(taskList.getAllTasks());
+                        ui.showMarkDone(taskList.getTask(cmd.taskNum - 1));
+                        break;
+                    case "unmark":
+                        if (cmd.taskNum < 1 || cmd.taskNum > taskList.size()) {
+                            throw new AdaException("This task does not exist. Please enter a valid task number.");
                         }
-                        LocalDateTime end;
-                        String s = to.trim();
-                        if (s.contains("-")) {
-                            end = LocalDateTime.parse(to);
-                        } else {
-                            int hh = Integer.parseInt(s.substring(0, 2));
-                            int mm = Integer.parseInt(s.substring(2, 4));
-                            LocalTime endTime = LocalTime.of(hh, mm);
-                            end = LocalDateTime.of(start.toLocalDate(), endTime);
+                        taskList.markUndone(cmd.taskNum - 1);
+                        storage.save(taskList.getAllTasks());
+                        ui.showMarkUndone(taskList.getTask(cmd.taskNum - 1));
+                        break;
+                    case "todo":
+                        Todo todo = new Todo(cmd.description);
+                        taskList.addTask(todo);
+                        storage.save(taskList.getAllTasks());
+                        ui.showAddTask(todo, taskList.size());
+                        break;
+                    case "deadline":
+                        LocalDateTime byDateTime;
+                        try {
+                            if (cmd.by.contains(" ")) {
+                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+                                byDateTime = LocalDateTime.parse(cmd.by, f);
+                            } else {
+                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                LocalDate d = LocalDate.parse(cmd.by, f);
+                                byDateTime = LocalDateTime.of(d, Deadline.STORAGE_DEFAULT_TIME);
+                            }
+                            Deadline dl = new Deadline(cmd.description, byDateTime);
+                            taskList.addTask(dl);
+                            storage.save(taskList.getAllTasks());
+                            ui.showAddTask(dl, taskList.size());
+                        } catch (DateTimeException e) {
+                            ui.showDateTimeErrorDeadline();
                         }
-                        Task event = new Event(description, start, end);
-                        tasks.add(event);
-                        storage.save(tasks);
-                        System.out.println("---------------------------------------------------");
-                        System.out.println(" Got it. I've added this task:");
-                        System.out.println("  " + event.toString());
-                        System.out.println(" Now you have " + tasks.size() + " tasks in the list");
-                        System.out.println("---------------------------------------------------");
-                    }catch (DateTimeException e){
-                        System.out.println("Oops! Invalid date format.");
-                        System.out.println("Please use format yyyy-MM‑dd (e.g. 2026‑08‑27) or yyyy‑MM‑dd HHmm (e.g. 2026‑08‑27 1800) for /from.");
-                        System.out.println("Please use format yyyy‑MM‑dd HHmm (e.g. 2026‑08‑27 1800) or HHmm (e.g. 1800) for /to");
-                    }
-                } else if(input.startsWith("delete")){
-                    String afterDelete = input.substring(6).trim();
-                    if(afterDelete.isEmpty()){
-                        throw new AdaException("Please provide a task number.");
-                    }
-                    if(input.charAt(6) != ' '){
-                        throw new AdaException("Wrong format. Use exactly one space: delete <>");
-                    }
-                    int num;
-                    try{
-                        num = Integer.parseInt(afterDelete);
-                    }catch(NumberFormatException e){
-                        throw new AdaException("Please input a valid integer number.");
-                    }
-                    if(num < 1 || num > tasks.size()){
-                        throw new AdaException("This task does not exist. Please enter a valid task number.");
-                    }
-                    Task taskT = tasks.get(num - 1);
-                    tasks.remove(num - 1);
-                    storage.save(tasks);
-                    System.out.println("---------------------------------------------------");
-                    System.out.println(" Noted. I've removed this task:");
-                    System.out.println("  " + taskT.toString());
-                    System.out.println(" Now you have " + tasks.size() + " tasks in the list");
-                    System.out.println("---------------------------------------------------");
-
-                } else {
-                    System.out.println("---------------------------------------------------");
-                    System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");
-                    System.out.println("---------------------------------------------------");
+                        break;
+                    case "event":
+                        try {
+                            LocalDateTime start;
+                            if (cmd.from.contains(" ")) {
+                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+                                start = LocalDateTime.parse(cmd.from, f);
+                            } else {
+                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                LocalDate d = LocalDate.parse(cmd.from, f);
+                                start = LocalDateTime.of(d, Deadline.STORAGE_DEFAULT_TIME);
+                            }
+                            LocalDateTime end;
+                            String toTrim = cmd.to.trim();
+                            if (toTrim.contains("-")) {
+                                end = LocalDateTime.parse(toTrim);
+                            } else {
+                                int hh = Integer.parseInt(toTrim.substring(0, 2));
+                                int mm = Integer.parseInt(toTrim.substring(2, 4));
+                                LocalTime t = LocalTime.of(hh, mm);
+                                end = LocalDateTime.of(start.toLocalDate(), t);
+                            }
+                            Event evt = new Event(cmd.description, start, end);
+                            taskList.addTask(evt);
+                            storage.save(taskList.getAllTasks());
+                            ui.showAddTask(evt, taskList.size());
+                        } catch (DateTimeException e) {
+                            ui.showDateTimeErrorEvent();
+                        }
+                        break;
+                    case "delete":
+                        if (cmd.taskNum < 1 || cmd.taskNum > taskList.size()) {
+                            throw new AdaException("This task does not exist. Please enter a valid task number.");
+                        }
+                        Task removed = taskList.removeTask(cmd.taskNum - 1);
+                        storage.save(taskList.getAllTasks());
+                        ui.showDeleteTask(removed, taskList.size());
+                        break;
+                    default:
+                        ui.showUnknownCommand();
                 }
-            }catch(AdaException e){
-                System.out.println(e.getMessage());
+            } catch (AdaException e) {
+                ui.showError(e.getMessage());
             }
         }
+    }
+
+    public static void main(String[] args) {
+        new Ada().run();
     }
 }
