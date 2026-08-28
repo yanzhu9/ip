@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Serves as the main application class for Ada task‑manager.
@@ -127,6 +128,11 @@ public class Ada {
                     Task removed = taskList.removeTask(cmd.taskNum - 1);
                     storage.save(taskList.getAllTasks());
                     ui.showDeleteTask(removed, taskList.size());
+                    break;
+                case "find":
+                    String keyword = cmd.keyword;
+                    List<Task> matched = taskList.matchTasksByKeyword(keyword);
+                    ui.showFindResult(matched);
                     break;
                 default:
                     ui.showUnknownCommand();

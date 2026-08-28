@@ -17,6 +17,7 @@ public class Parser {
         public String by;
         public String from;
         public String to;
+        public String keyword;
 
         /**
          * Creates a CommandInfo holding only the command name.
@@ -145,6 +146,22 @@ public class Parser {
             return ci;
         }
 
+        if (input.startsWith("find")) {
+            String trimmedInput = input.trim();
+            if (trimmedInput.length() == 4) {
+                throw new AdaException("Please provide a keyword to find");
+            }
+            if (trimmedInput.charAt(4) != ' ') {
+                throw new AdaException("Invalid format for find command. Usage: find KEYWORD");
+            }
+            String rest = trimmedInput.substring(4).trim();
+            if (rest.isEmpty()) {
+                throw new AdaException("Please provide a keyword to find");
+            }
+            CommandInfo ci = new CommandInfo("find");
+            ci.keyword = rest;
+            return ci;
+        }
         return new CommandInfo("unknown");
     }
 }

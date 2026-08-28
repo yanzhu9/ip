@@ -1,6 +1,7 @@
 package ada;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Maintains the in‑memory collection of tasks.
@@ -83,5 +84,24 @@ public class TaskList {
      */
     public ArrayList<Task> getAllTasks() {
         return new ArrayList<>(tasks);
+    }
+
+    /**
+     * Returns list of tasks whose description contains the given keyword (case‑insensitive).
+     *
+     * @param keyword search keyword from find command
+     * @return matched task list
+     */
+    public List<Task> matchTasksByKeyword(String keyword) {
+        List<Task> matchedTasks = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase();
+
+        for (Task task : tasks) {
+            String taskDesc = task.getDescription().toLowerCase();
+            if (taskDesc.contains(lowerKeyword)) {
+                matchedTasks.add(task);
+            }
+        }
+        return matchedTasks;
     }
 }

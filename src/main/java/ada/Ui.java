@@ -74,6 +74,26 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /**
+     * Displays the list of tasks matched by find‑keyword search.
+     *
+     * @param matchedTasks list of tasks that match keyword
+     */
+    public void showFindResult(List<Task> matchedTasks) {
+        System.out.println(LINE);
+        if (matchedTasks.isEmpty()) {
+            System.out.println("No matching tasks found.");
+            System.out.println(LINE);
+            return;
+        }
+
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < matchedTasks.size(); i++) {
+            System.out.println((i + 1) + ". " + matchedTasks.get(i));
+        }
+        System.out.println(LINE);
+    }
+
     public void showUnknownCommand() {
         System.out.println(LINE);
         System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");

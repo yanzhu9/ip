@@ -16,7 +16,7 @@ public class Storage {
     /**
      * Relative file path used to store serialized task data.
      */
-    private static final String FILE_PATH = "./data/Ada.Ada.txt";
+    private static final String FILE_PATH = "./data/Ada.txt";
 
     /**
      * Constructs a Storage instance. Creates the data folder if it is absent.
