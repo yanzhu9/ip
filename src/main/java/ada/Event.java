@@ -34,7 +34,7 @@ public class Event extends Task {
 
     private String formatDateTime(LocalDateTime dt) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a",Locale.ENGLISH);
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
 
         StringBuilder sb = new StringBuilder();
         sb.append(dt.toLocalDate().format(dateFormatter));

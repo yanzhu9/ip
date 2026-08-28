@@ -12,18 +12,20 @@ public class Ui {
                     "  / _ \\  | | | |  / _ \\  \n" +
                     " / ___ \\ | |_| | / ___ \\ \n" +
                     "/_/   \\_\\\\____/ /_/   \\_\\\n";
-    public Ui(){
+
+    public Ui() {
         scanner = new Scanner(System.in);
     }
 
-    public void showWelcome(){
+    public void showWelcome() {
         System.out.println(LINE);
         System.out.print(BANNER);
         System.out.println(" Hello, I'm Ada.Ada.");
         System.out.println(" What can I do for you?");
         System.out.println(LINE);
     }
-    public String readCommand(){
+
+    public String readCommand() {
         return scanner.nextLine();
     }
 

@@ -44,7 +44,7 @@ public class Storage {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
                 Task task = parseLineToTask(line);
-                if(task != null) {
+                if (task != null) {
                     tasks.add(task);
                 }
             }
@@ -63,7 +63,7 @@ public class Storage {
      */
     public void save(ArrayList<Task> tasks) {
         try (FileWriter fw = new FileWriter(FILE_PATH)) {
-            for(Task t : tasks) {
+            for (Task t : tasks) {
                 fw.write(t.toFileFormat() + System.lineSeparator());
             }
             fw.close();
@@ -88,7 +88,7 @@ public class Storage {
 
         if (type.equals("T")) {
             Todo todo = new Todo(description);
-            if(isDone){
+            if (isDone) {
                 todo.markDone();
             }
             return todo;
@@ -96,7 +96,7 @@ public class Storage {
             String byStr = parts[3];
             LocalDateTime by = LocalDateTime.parse(byStr);
             Deadline d = new Deadline(description, by);
-            if(isDone){
+            if (isDone) {
                 d.markDone();
             }
             return d;
@@ -106,7 +106,7 @@ public class Storage {
             LocalDateTime start = LocalDateTime.parse(startStr);
             LocalDateTime end = LocalDateTime.parse(endStr);
             Event e = new Event(description, start, end);
-            if(isDone){
+            if (isDone) {
                 e.markDone();
             }
             return e;

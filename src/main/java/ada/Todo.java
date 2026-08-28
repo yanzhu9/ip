@@ -22,7 +22,7 @@ public class Todo extends Task {
      * @return formatted display string
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "[T]" + super.toString();
     }
 
@@ -33,7 +33,7 @@ public class Todo extends Task {
      * @return file‑storage compatible text line
      */
     @Override
-    public String toFileFormat(){
+    public String toFileFormat() {
         return "T | " + super.toFileFormat();
     }
 }

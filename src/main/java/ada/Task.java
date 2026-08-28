@@ -1,6 +1,5 @@
 package ada;
 
-
 /**
  * Represents a general‑purpose task storing its description and completion status.
  * Serves as the base class for {@code Todo}, {@code Deadline} and {@code Event}.
