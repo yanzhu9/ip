@@ -1,7 +1,15 @@
 package ada;
 
+/**
+ * Parses raw user‑input strings and converts them into structured {@code Parser.CommandInfo} objects.
+ * Detects command type, extracts arguments and throws {@code AdaException} for format‑violating input.
+ */
 public class Parser {
 
+    /**
+     * Data‑holding inner class that stores parsed result of one user command.
+     * Contains command name and corresponding extracted argument fields.
+     */
     public static class CommandInfo {
         public String command;
         public int taskNum;
@@ -10,11 +18,25 @@ public class Parser {
         public String from;
         public String to;
 
+        /**
+         * Creates a CommandInfo holding only the command name.
+         * Other fields remain uninitialized and should be set manually if needed.
+         *
+         * @param command name of the recognized user command
+         */
         public CommandInfo(String command) {
             this.command = command;
         }
     }
 
+    /**
+     * Parses one line of user input into a {@code CommandInfo}.
+     * Validates input syntax and extracts relevant command arguments.
+     *
+     * @param input raw text line entered by the user
+     * @return structured parsed command information
+     * @throws AdaException when input format is invalid or required arguments are missing
+     */
     public CommandInfo parse(String input) throws AdaException {
         if (input.equals("bye")) {
             return new CommandInfo("bye");

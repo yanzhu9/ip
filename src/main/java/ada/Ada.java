@@ -7,12 +7,22 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+/**
+ * Serves as the main application class for Ada task‑manager.
+ * Coordinates user interface, input parsing, task operations and file storage.
+ * Initializes core components, loads saved‑tasks, and runs the main interactive loop
+ * to process user commands until receiving the "bye" command.
+ */
 public class Ada {
     private final Ui ui;
     private final Storage storage;
     private final TaskList taskList;
     private final Parser parser;
 
+    /**
+     * Constructs an Ada application instance.
+     * Initializes UI, storage, parser, and loads existing tasks from disk into TaskList.
+     */
     public Ada() {
         ui = new Ui();
         storage = new Storage();
@@ -21,6 +31,11 @@ public class Ada {
         parser = new Parser();
     }
 
+    /**
+     * Starts the main‑event loop of the program.
+     * Continuously reads user input, parses and executes commands.
+     * Handles runtime‑specific exceptions and terminates on "bye" command.
+     */
     public void run() {
         ui.showWelcome();
         while (true) {
@@ -122,6 +137,12 @@ public class Ada {
         }
     }
 
+    /**
+     * Application entry‑point.
+     * Creates an Ada instance and launches the interactive program.
+     *
+     * @param args command‑line arguments (unused)
+     */
     public static void main(String[] args) {
         new Ada().run();
     }

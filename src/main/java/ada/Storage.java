@@ -7,9 +7,20 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.util.ArrayList;
 
+/**
+ * Handles file‑system persistence for tasks.
+ * Responsible for loading saved tasks from disk and writing task list back to storage file.
+ * Automatically creates the data directory if it does not exist.
+ */
 public class Storage {
+    /**
+     * Relative file path used to store serialized task data.
+     */
     private static final String FILE_PATH = "./data/Ada.Ada.txt";
 
+    /**
+     * Constructs a Storage instance. Creates the data folder if it is absent.
+     */
     public Storage() {
         File dataFolder = new File("./data");
         if (!dataFolder.exists()) {
@@ -18,7 +29,10 @@ public class Storage {
     }
 
     /**
-     * read from the disk then return the task list
+     * Reads task records from local file and reconstructs list of {@code Task} objects.
+     * If the file is missing or cannot be read, returns an empty ArrayList.
+     *
+     * @return list of tasks loaded from disk
      */
     public ArrayList<Task> load() {
         ArrayList<Task> tasks = new ArrayList<>();
@@ -42,7 +56,10 @@ public class Storage {
     }
 
     /**
-     * write the current task list into the disk
+     * Serializes and writes the given task list into the local storage file.
+     * Prints warning message when IO error occurs during saving.
+     *
+     * @param tasks collection of tasks to be persisted
      */
     public void save(ArrayList<Task> tasks) {
         try (FileWriter fw = new FileWriter(FILE_PATH)) {
@@ -55,6 +72,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Parses one line from storage file and reconstructs corresponding Task object.
+     * Supports Todo, Deadline and Event task types. Returns null for unrecognised format.
+     *
+     * @param line single raw text‑line read from storage file
+     * @return reconstructed Task instance, or null if format is unknown
+     */
     Task parseLineToTask(String line) {
         // use '|' to split the String
         String[] parts = line.split(" \\| ");
