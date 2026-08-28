@@ -1,17 +1,17 @@
 package ada;
 
 public class Todo extends Task {
-    public Todo(String description){
+    public Todo(String description) {
         super(description);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "[T]" + super.toString();
     }
 
     @Override
-    public String toFileFormat(){
+    public String toFileFormat() {
         return "T | " + super.toFileFormat();
     }
 }
