@@ -12,18 +12,20 @@ public class Ui {
                     "  / _ \\  | | | |  / _ \\  \n" +
                     " / ___ \\ | |_| | / ___ \\ \n" +
                     "/_/   \\_\\\\____/ /_/   \\_\\\n";
-    public Ui(){
+
+    public Ui() {
         scanner = new Scanner(System.in);
     }
 
-    public void showWelcome(){
+    public void showWelcome() {
         System.out.println(LINE);
         System.out.print(BANNER);
         System.out.println(" Hello, I'm Ada.Ada.");
         System.out.println(" What can I do for you?");
         System.out.println(LINE);
     }
-    public String readCommand(){
+
+    public String readCommand() {
         return scanner.nextLine();
     }
 
@@ -69,6 +71,26 @@ public class Ui {
         System.out.println(" Noted. I've removed this task:");
         System.out.println("  " + task);
         System.out.println(" Now you have " + total + " tasks in the list");
+        System.out.println(LINE);
+    }
+
+    /**
+     * Displays the list of tasks matched by find‑keyword search.
+     *
+     * @param matchedTasks list of tasks that match keyword
+     */
+    public void showFindResult(List<Task> matchedTasks) {
+        System.out.println(LINE);
+        if (matchedTasks.isEmpty()) {
+            System.out.println("No matching tasks found.");
+            System.out.println(LINE);
+            return;
+        }
+
+        System.out.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < matchedTasks.size(); i++) {
+            System.out.println((i + 1) + ". " + matchedTasks.get(i));
+        }
         System.out.println(LINE);
     }
 

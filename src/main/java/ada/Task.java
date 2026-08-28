@@ -1,30 +1,41 @@
 package ada;
 
-public class Task{
+public class Task {
     private String description;
     private boolean isDone;
 
-    public Task(String description){
+    public Task(String description) {
         this.description = description;
         this.isDone = false;
     }
 
-    public boolean isDone(){
+    public boolean isDone() {
         return this.isDone;
     }
-    public void markDone(){
+
+    public void markDone() {
         this.isDone = true;
     }
-    public void markUndone(){
+
+    public void markUndone() {
         this.isDone = false;
     }
 
-    public String toString(){
+    /**
+     * Returns the description of the task.
+     *
+     * @return task description string
+     */
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String toString() {
         String done = isDone() ? "[X] " : "[ ] ";
         return done + this.description;
     }
 
-    public String toFileFormat(){
+    public String toFileFormat() {
         return (this.isDone ? "1" : "0") + " | " + this.description;
     }
 }
