@@ -61,4 +61,13 @@ public class Task{
     public String toFileFormat(){
         return (this.isDone ? "1" : "0") + " | " + this.description;
     }
+
+    /**
+     * Returns the description of this task.
+     *
+     * @return task description string
+     */
+    public String getDescription() {
+        return description;
+    }
 }
