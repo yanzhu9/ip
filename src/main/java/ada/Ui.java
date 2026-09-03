@@ -114,4 +114,141 @@ public class Ui {
     public void showError(String msg) {
         System.out.println(msg);
     }
+
+    /**
+     * Returns the welcome message.
+     *
+     * @return welcome message
+     */
+    public String getWelcomeText() {
+        return " Hello, I'm Ada.\n"
+                + " What can I do for you?";
+    }
+
+    /**
+     * Returns the goodbye message.
+     *
+     * @return goodbye message
+     */
+    public String getByeText() {
+        return "Bye. Hope to see you again soon!";
+    }
+
+    /**
+     * Returns a formatted task list.
+     *
+     * @param tasks tasks to display
+     * @return formatted task list
+     */
+    public String getTaskListText(List<Task> tasks) {
+        StringBuilder result = new StringBuilder("Here are the tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            result.append("\n")
+                    .append(i + 1)
+                    .append(". ")
+                    .append(tasks.get(i));
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the response for marking a task as done.
+     *
+     * @param task marked task
+     * @return response message
+     */
+    public String getMarkDoneText(Task task) {
+        return "Nice! I've marked this task as done:\n  " + task;
+    }
+
+    /**
+     * Returns the response for marking a task as not done.
+     *
+     * @param task unmarked task
+     * @return response message
+     */
+    public String getMarkUndoneText(Task task) {
+        return "OK, I've marked this task as not done yet:\n  " + task;
+    }
+
+    /**
+     * Returns the response for adding a task.
+     *
+     * @param task added task
+     * @param total total number of tasks
+     * @return response message
+     */
+    public String getAddTaskText(Task task, int total) {
+        return "Got it. I've added this task:\n  "
+                + task
+                + "\nNow you have "
+                + total
+                + " tasks in the list.";
+    }
+
+    /**
+     * Returns the response for deleting a task.
+     *
+     * @param task deleted task
+     * @param total total number of remaining tasks
+     * @return response message
+     */
+    public String getDeleteTaskText(Task task, int total) {
+        return "Noted. I've removed this task:\n  "
+                + task
+                + "\nNow you have "
+                + total
+                + " tasks in the list.";
+    }
+
+    /**
+     * Returns a formatted list of matching tasks.
+     *
+     * @param matchedTasks matching tasks
+     * @return formatted search result
+     */
+    public String getFindResultText(List<Task> matchedTasks) {
+        if (matchedTasks.isEmpty()) {
+            return "No matching tasks found.";
+        }
+
+        StringBuilder result = new StringBuilder("Here are the matching tasks in your list:");
+        for (int i = 0; i < matchedTasks.size(); i++) {
+            result.append("\n")
+                    .append(i + 1)
+                    .append(". ")
+                    .append(matchedTasks.get(i));
+        }
+        return result.toString();
+    }
+
+    /**
+     * Returns the unknown-command message.
+     *
+     * @return unknown-command message
+     */
+    public String getUnknownCommandText() {
+        return "OOPS!!! I'm sorry, but I don't know what that means :-(";
+    }
+
+    /**
+     * Returns the deadline date-format error message.
+     *
+     * @return deadline error message
+     */
+    public String getDateTimeErrorDeadlineText() {
+        return "Oops! Invalid date format.\n"
+                + "Please use yyyy-MM-dd or yyyy-MM-dd HHmm.";
+    }
+
+    /**
+     * Returns the event date-format error message.
+     *
+     * @return event error message
+     */
+    public String getDateTimeErrorEventText() {
+        return "Oops! Invalid date format.\n"
+                + "Use yyyy-MM-dd or yyyy-MM-dd HHmm for /from, "
+                + "and yyyy-MM-dd HHmm or HHmm for /to.";
+    }
 }

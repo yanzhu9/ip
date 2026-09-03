@@ -144,6 +144,135 @@ public class Ada {
     }
 
     /**
+     * Processes one user command and returns Ada's response for the GUI.
+     *
+     * @param input command entered by the user
+     * @return response to display in the GUI
+     */
+    public String getResponse(String input) {
+        try {
+            Parser.CommandInfo cmd = parser.parse(input);
+
+            switch (cmd.command) {
+            case "bye":
+                return ui.getByeText();
+            case "list":
+                return ui.getTaskListText(taskList.getAllTasks());
+            case "mark":
+                validateTaskNumber(cmd.taskNum);
+                taskList.markDone(cmd.taskNum - 1);
+                Task markedTask = taskList.getTask(cmd.taskNum - 1);
+                storage.save(taskList.getAllTasks());
+                return ui.getMarkDoneText(markedTask);
+            case "unmark":
+                validateTaskNumber(cmd.taskNum);
+                taskList.markUndone(cmd.taskNum - 1);
+                Task unmarkedTask = taskList.getTask(cmd.taskNum - 1);
+                storage.save(taskList.getAllTasks());
+                return ui.getMarkUndoneText(unmarkedTask);
+            case "todo":
+                Todo todo = new Todo(cmd.description);
+                taskList.addTask(todo);
+                storage.save(taskList.getAllTasks());
+                return ui.getAddTaskText(todo, taskList.size());
+            case "deadline":
+                return addDeadline(cmd);
+            case "event":
+                return addEvent(cmd);
+            case "delete":
+                validateTaskNumber(cmd.taskNum);
+                Task removed = taskList.removeTask(cmd.taskNum - 1);
+                storage.save(taskList.getAllTasks());
+                return ui.getDeleteTaskText(removed, taskList.size());
+            case "find":
+                List<Task> matched = taskList.matchTasksByKeyword(cmd.keyword);
+                return ui.getFindResultText(matched);
+            default:
+                return ui.getUnknownCommandText();
+            }
+        } catch (AdaException e) {
+            return e.getMessage();
+        }
+    }
+
+    /**
+     * Returns Ada's welcome message for the GUI.
+     *
+     * @return welcome message
+     */
+    public String getWelcomeText() {
+        return ui.getWelcomeText();
+    }
+
+    private void validateTaskNumber(int taskNum) throws AdaException {
+        if (taskNum < 1 || taskNum > taskList.size()) {
+            throw new AdaException(
+                    "This task does not exist. Please enter a valid task number.");
+        }
+    }
+
+    private String addDeadline(Parser.CommandInfo cmd) {
+        try {
+            LocalDateTime byDateTime = parseDateTime(
+                    cmd.by, Deadline.STORAGE_DEFAULT_TIME);
+            Deadline deadline = new Deadline(cmd.description, byDateTime);
+            taskList.addTask(deadline);
+            storage.save(taskList.getAllTasks());
+            return ui.getAddTaskText(deadline, taskList.size());
+        } catch (DateTimeException e) {
+            return ui.getDateTimeErrorDeadlineText();
+        }
+    }
+
+    private String addEvent(Parser.CommandInfo cmd) {
+        try {
+            LocalDateTime start = parseDateTime(
+                    cmd.from, Deadline.STORAGE_DEFAULT_TIME);
+            LocalDateTime end = parseEventEnd(cmd.to, start);
+
+            Event event = new Event(cmd.description, start, end);
+            taskList.addTask(event);
+            storage.save(taskList.getAllTasks());
+            return ui.getAddTaskText(event, taskList.size());
+        } catch (DateTimeException | NumberFormatException
+                 | IndexOutOfBoundsException e) {
+            return ui.getDateTimeErrorEventText();
+        }
+    }
+
+    private LocalDateTime parseDateTime(String value, LocalTime defaultTime) {
+        if (value.contains(" ")) {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+            return LocalDateTime.parse(value, formatter);
+        }
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(value, formatter);
+        return LocalDateTime.of(date, defaultTime);
+    }
+
+    private LocalDateTime parseEventEnd(
+            String value, LocalDateTime start) {
+        String trimmedValue = value.trim();
+
+        if (trimmedValue.contains("-")) {
+            if (trimmedValue.contains(" ")) {
+                DateTimeFormatter formatter =
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+                return LocalDateTime.parse(trimmedValue, formatter);
+            }
+            return LocalDateTime.parse(trimmedValue);
+        }
+
+        int hour = Integer.parseInt(trimmedValue.substring(0, 2));
+        int minute = Integer.parseInt(trimmedValue.substring(2, 4));
+        LocalTime time = LocalTime.of(hour, minute);
+        return LocalDateTime.of(start.toLocalDate(), time);
+    }
+
+    /**
      * Application entry‑point.
      * Creates an Ada instance and launches the interactive program.
      *
