@@ -6,7 +6,7 @@ package ada;
  * Provides common operations to mark task as done or undone, and formats output
  * for console display and file persistence.
  */
-public class Task{
+public class Task {
     private String description;
     private boolean isDone;
 
@@ -15,7 +15,7 @@ public class Task{
      *
      * @param description the textual content describing the task
      */
-    public Task(String description){
+    public Task(String description) {
         this.description = description;
         this.isDone = false;
     }
@@ -25,21 +25,21 @@ public class Task{
      *
      * @return true if task is done, false otherwise
      */
-    public boolean isDone(){
+    public boolean isDone() {
         return this.isDone;
     }
 
     /**
      * Sets this task’s status to complete.
      */
-    public void markDone(){
+    public void markDone() {
         this.isDone = true;
     }
 
     /**
      * Sets this task’s status to incomplete.
      */
-    public void markUndone(){
+    public void markUndone() {
         this.isDone = false;
     }
 
@@ -48,7 +48,7 @@ public class Task{
      *
      * @return formatted task string shown to users
      */
-    public String toString(){
+    public String toString() {
         String done = isDone() ? "[X] " : "[ ] ";
         return done + this.description;
     }
@@ -58,7 +58,7 @@ public class Task{
      *
      * @return storage‑friendly string representation
      */
-    public String toFileFormat(){
+    public String toFileFormat() {
         return (this.isDone ? "1" : "0") + " | " + this.description;
     }
 

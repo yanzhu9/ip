@@ -12,12 +12,12 @@ import java.util.Locale;
  */
 public class Event extends Task {
 
-    private final LocalDateTime start;
-    private final LocalDateTime end;
     /**
      * Default fallback time used when input only provides a date without time.
      */
     private static final LocalTime STORAGE_DEFAULT_TIME = LocalTime.of(23, 59);
+    private final LocalDateTime start;
+    private final LocalDateTime end;
 
     /**
      * Constructs an Event task with description, start and end date‑time.

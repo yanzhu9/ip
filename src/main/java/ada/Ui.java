@@ -1,17 +1,17 @@
 package ada;
 
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
 
 public class Ui {
-    private final Scanner scanner;
     private static final String LINE = "---------------------------------------------------";
     private static final String BANNER =
-            "    _     ____      _    \n" +
-                    "   / \\   |  _ \\    / \\   \n" +
-                    "  / _ \\  | | | |  / _ \\  \n" +
-                    " / ___ \\ | |_| | / ___ \\ \n" +
-                    "/_/   \\_\\\\____/ /_/   \\_\\\n";
+            "    _     ____      _    \n"
+                    + "   / \\   |  _ \\    / \\   \n"
+                    + "  / _ \\  | | | |  / _ \\  \n"
+                    + " / ___ \\ | |_| | / ___ \\ \n"
+                    + "/_/   \\_\\\\____/ /_/   \\_\\\n";
+    private final Scanner scanner;
 
     public Ui() {
         scanner = new Scanner(System.in);
@@ -107,7 +107,7 @@ public class Ui {
 
     public void showDateTimeErrorEvent() {
         System.out.println("Oops! Invalid date format.");
-        System.out.println("Please use format yyyy-MM-dd (e.g. 2026-08-27) or yyyy-MM-dd HHmm (e.g. 2026-08-27 1800) for /from.");
+        System.out.println("Please use format yyyy-MM-dd or yyyy-MM-dd HHmm (e.g. 2026-08-27 1800) for /from.");
         System.out.println("Please use format yyyy-MM-dd HHmm (e.g. 2026-08-27 1800) or HHmm (e.g. 1800) for /to");
     }
 
