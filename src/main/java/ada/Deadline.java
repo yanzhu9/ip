@@ -11,8 +11,8 @@ import java.util.Locale;
  */
 public class Deadline extends Task {
 
-    private LocalDateTime by;
     static final LocalTime STORAGE_DEFAULT_TIME = LocalTime.of(23, 59);
+    private LocalDateTime by;
 
     /**
      * Constructs a Deadline task with given description and due datetime.
