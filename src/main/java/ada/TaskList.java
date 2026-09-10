@@ -2,6 +2,7 @@ package ada;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;                //change String to lower case
 
 /**
  * Maintains the in‑memory collection of tasks.
@@ -111,15 +112,11 @@ public class TaskList {
      */
     public List<Task> matchTasksByKeyword(String keyword) {
         assert keyword != null : "A keyword is required for task searching";
-        List<Task> matchedTasks = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
-
-        for (Task task : tasks) {
-            String taskDesc = task.getDescription().toLowerCase();
-            if (taskDesc.contains(lowerKeyword)) {
-                matchedTasks.add(task);
-            }
-        }
-        return matchedTasks;
+        return tasks.stream()
+                .filter(task -> task.getDescription()
+                        .toLowerCase(Locale.ROOT)
+                        .contains(lowerKeyword))
+                .toList();
     }
 }
