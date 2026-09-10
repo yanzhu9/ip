@@ -16,6 +16,8 @@ public class Task {
      * @param description the textual content describing the task
      */
     public Task(String description) {
+        assert description != null : "A task must have a non-null description";
+
         this.description = description;
         this.isDone = false;
     }
