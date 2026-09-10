@@ -50,41 +50,11 @@ public class Parser {
         }
 
         if (input.startsWith("mark")) {
-            String after = input.substring(4).trim();
-            if (after.isEmpty()) {
-                throw new AdaException("Please provide a task number.");
-            }
-            if (input.charAt(4) != ' ') {
-                throw new AdaException("Wrong format. Use exactly one space: mark <>");
-            }
-            int num;
-            try {
-                num = Integer.parseInt(after);
-            } catch (NumberFormatException e) {
-                throw new AdaException("Please input a valid integer number.");
-            }
-            CommandInfo ci = new CommandInfo("mark");
-            ci.taskNum = num;
-            return ci;
+            return parseTaskNumberCommand(input, "mark", 4);
         }
 
         if (input.startsWith("unmark")) {
-            String after = input.substring(6).trim();
-            if (after.isEmpty()) {
-                throw new AdaException("Please provide a task number.");
-            }
-            if (input.charAt(6) != ' ') {
-                throw new AdaException("Wrong format. Use exactly one space: unmark <>");
-            }
-            int num;
-            try {
-                num = Integer.parseInt(after);
-            } catch (NumberFormatException e) {
-                throw new AdaException("Please input a valid integer number.");
-            }
-            CommandInfo ci = new CommandInfo("unmark");
-            ci.taskNum = num;
-            return ci;
+            return parseTaskNumberCommand(input, "unmark", 6);
         }
 
         if (input.startsWith("todo")) {
@@ -165,22 +135,7 @@ public class Parser {
         }
 
         if (input.startsWith("delete")) {
-            String after = input.substring(6).trim();
-            if (after.isEmpty()) {
-                throw new AdaException("Please provide a task number.");
-            }
-            if (input.charAt(6) != ' ') {
-                throw new AdaException("Wrong format. Use exactly one space: delete <>");
-            }
-            int num;
-            try {
-                num = Integer.parseInt(after);
-            } catch (NumberFormatException e) {
-                throw new AdaException("Please input a valid integer number.");
-            }
-            CommandInfo ci = new CommandInfo("delete");
-            ci.taskNum = num;
-            return ci;
+            return parseTaskNumberCommand(input, "delete", 6);
         }
 
         if (input.startsWith("find")) {
@@ -201,4 +156,27 @@ public class Parser {
         }
         return new CommandInfo("unknown");
     }
+
+    private CommandInfo parseTaskNumberCommand(
+            String input,
+            String command,
+            int commandLength) throws AdaException {
+        String after = input.substring(commandLength).trim();
+        if (after.isEmpty()) {
+            throw new AdaException("Please provide a task number.");
+        }
+        if (input.charAt(commandLength) != ' ') {
+            throw new AdaException(
+                    "Wrong format. Use exactly one space: "
+                            + command + " <>");
+        }
+        try {
+            CommandInfo result = new CommandInfo(command);
+            result.taskNum = Integer.parseInt(after);
+            return result;
+        } catch (NumberFormatException e) {
+            throw new AdaException("Please input a valid integer number.");
+        }
+    }
+
 }

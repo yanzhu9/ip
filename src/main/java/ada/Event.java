@@ -1,9 +1,6 @@
 package ada;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * Represents an event‑type task with a description, start datetime and end datetime.
@@ -15,7 +12,6 @@ public class Event extends Task {
     /**
      * Default fallback time used when input only provides a date without time.
      */
-    private static final LocalTime STORAGE_DEFAULT_TIME = LocalTime.of(23, 59);
     private final LocalDateTime start;
     private final LocalDateTime end;
 
@@ -34,13 +30,13 @@ public class Event extends Task {
     }
 
     private String formatDateTime(LocalDateTime dt) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
-
         StringBuilder sb = new StringBuilder();
-        sb.append(dt.toLocalDate().format(dateFormatter));
-        if (!dt.toLocalTime().equals(STORAGE_DEFAULT_TIME)) {
-            sb.append(" ").append(dt.format(timeFormatter));
+        sb.append(dt.toLocalDate()
+                .format(DateTimeFormats.DISPLAY_DATE));
+        if (!dt.toLocalTime()
+                .equals(DateTimeFormats.DEFAULT_TIME)) {
+            sb.append(" ")
+                    .append(dt.format(DateTimeFormats.DISPLAY_TIME));
         }
         return sb.toString();
     }
