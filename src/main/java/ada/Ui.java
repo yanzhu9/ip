@@ -17,6 +17,12 @@ public class Ui {
         scanner = new Scanner(System.in);
     }
 
+    private void showSection(String text) {
+        System.out.println(LINE);
+        System.out.println(text);
+        System.out.println(LINE);
+    }
+
     public void showWelcome() {
         System.out.println(LINE);
         System.out.print(BANNER);
@@ -30,9 +36,7 @@ public class Ui {
     }
 
     public void showBye() {
-        System.out.println(LINE);
-        System.out.println(" Bye. Hope to see you again soon!");
-        System.out.println(LINE);
+        showSection(getByeText());
     }
 
     public void showTaskList(List<Task> tasks) {
@@ -45,33 +49,19 @@ public class Ui {
     }
 
     public void showMarkDone(Task task) {
-        System.out.println(LINE);
-        System.out.println(" Nice! I've marked this task as done:");
-        System.out.println("  " + task);
-        System.out.println(LINE);
+        showSection(getMarkDoneText(task));
     }
 
     public void showMarkUndone(Task task) {
-        System.out.println(LINE);
-        System.out.println(" OK, I've marked this task as not done yet:");
-        System.out.println("  " + task);
-        System.out.println(LINE);
+        showSection(getMarkUndoneText(task));
     }
 
     public void showAddTask(Task task, int total) {
-        System.out.println(LINE);
-        System.out.println(" Got it. I've added this task:");
-        System.out.println("  " + task);
-        System.out.println(" Now you have " + total + " tasks in the list");
-        System.out.println(LINE);
+        showSection(getAddTaskText(task, total));
     }
 
     public void showDeleteTask(Task task, int total) {
-        System.out.println(LINE);
-        System.out.println(" Noted. I've removed this task:");
-        System.out.println("  " + task);
-        System.out.println(" Now you have " + total + " tasks in the list");
-        System.out.println(LINE);
+        showSection(getDeleteTaskText(task, total));
     }
 
     /**
@@ -80,24 +70,11 @@ public class Ui {
      * @param matchedTasks list of tasks that match keyword
      */
     public void showFindResult(List<Task> matchedTasks) {
-        System.out.println(LINE);
-        if (matchedTasks.isEmpty()) {
-            System.out.println("No matching tasks found.");
-            System.out.println(LINE);
-            return;
-        }
-
-        System.out.println("Here are the matching tasks in your list:");
-        for (int i = 0; i < matchedTasks.size(); i++) {
-            System.out.println((i + 1) + ". " + matchedTasks.get(i));
-        }
-        System.out.println(LINE);
+        showSection(getFindResultText(matchedTasks));
     }
 
     public void showUnknownCommand() {
-        System.out.println(LINE);
-        System.out.println("OOPS!!! I'm sorry, but I don't know what that means :-(");
-        System.out.println(LINE);
+        showSection(getUnknownCommandText());
     }
 
     public void showDateTimeErrorDeadline() {

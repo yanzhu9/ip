@@ -1,9 +1,7 @@
 package ada;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 /**
  * Represents a deadline‑type task that stores a description and a due‑date time.
@@ -11,7 +9,6 @@ import java.util.Locale;
  */
 public class Deadline extends Task {
 
-    static final LocalTime STORAGE_DEFAULT_TIME = LocalTime.of(23, 59);
     private LocalDateTime by;
 
     /**
@@ -29,20 +26,18 @@ public class Deadline extends Task {
     /**
      * Returns human‑readable string for console display.
      * Prefixes "[D]" and appends formatted due‑date information.
-     * Omits time if it equals {@code STORAGE_DEFAULT_TIME}.
      *
      * @return formatted string shown to users
      */
     @Override
     public String toString() {
-        DateTimeFormatter dateFmt = DateTimeFormatter.ofPattern("MMM dd yyyy", Locale.ENGLISH);
-        DateTimeFormatter timeFmt = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
-
         StringBuilder output = new StringBuilder();
-        output.append(this.by.toLocalDate().format(dateFmt));
-
-        if (!this.by.toLocalTime().equals(STORAGE_DEFAULT_TIME)) {
-            output.append(" ").append(this.by.format(timeFmt));
+        output.append(this.by.toLocalDate()
+                .format(DateTimeFormats.DISPLAY_DATE));
+        if (!this.by.toLocalTime()
+                .equals(DateTimeFormats.DEFAULT_TIME)) {
+            output.append(" ")
+                    .append(this.by.format(DateTimeFormats.DISPLAY_TIME));
         }
 
         return "[D]" + super.toString() + " (by: " + output + ")";

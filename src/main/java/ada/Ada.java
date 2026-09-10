@@ -4,7 +4,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,81 +51,37 @@ public class Ada {
                         ui.showTaskList(taskList.getAllTasks());
                         break;
                     case "mark":
-                        if (cmd.taskNum < 1 || cmd.taskNum > taskList.size()) {
-                            throw new AdaException("This task does not exist. Please enter a valid task number.");
-                        }
-                        taskList.markDone(cmd.taskNum - 1);
-                        storage.save(taskList.getAllTasks());
-                        ui.showMarkDone(taskList.getTask(cmd.taskNum - 1));
+                        Task markedTask = markTask(cmd.taskNum);
+                        ui.showMarkDone(markedTask);
                         break;
                     case "unmark":
-                        if (cmd.taskNum < 1 || cmd.taskNum > taskList.size()) {
-                            throw new AdaException("This task does not exist. Please enter a valid task number.");
-                        }
-                        taskList.markUndone(cmd.taskNum - 1);
-                        storage.save(taskList.getAllTasks());
-                        ui.showMarkUndone(taskList.getTask(cmd.taskNum - 1));
+                        Task unmarkedTask = unmarkTask(cmd.taskNum);
+                        ui.showMarkUndone(unmarkedTask);
                         break;
                     case "todo":
-                        Todo todo = new Todo(cmd.description);
-                        taskList.addTask(todo);
-                        storage.save(taskList.getAllTasks());
+                        Todo todo = addTodoTask(cmd.description);
                         ui.showAddTask(todo, taskList.size());
                         break;
                     case "deadline":
-                        LocalDateTime byDateTime;
                         try {
-                            if (cmd.by.contains(" ")) {
-                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-                                byDateTime = LocalDateTime.parse(cmd.by, f);
-                            } else {
-                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                                LocalDate d = LocalDate.parse(cmd.by, f);
-                                byDateTime = LocalDateTime.of(d, Deadline.STORAGE_DEFAULT_TIME);
-                            }
-                            Deadline dl = new Deadline(cmd.description, byDateTime);
-                            taskList.addTask(dl);
-                            storage.save(taskList.getAllTasks());
-                            ui.showAddTask(dl, taskList.size());
+                            Deadline deadline = addDeadlineTask(cmd);
+                            ui.showAddTask(deadline, taskList.size());
                         } catch (DateTimeException e) {
                             ui.showDateTimeErrorDeadline();
                         }
                         break;
                     case "event":
                         try {
-                            LocalDateTime start;
-                            if (cmd.from.contains(" ")) {
-                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-                                start = LocalDateTime.parse(cmd.from, f);
-                            } else {
-                                DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                                LocalDate d = LocalDate.parse(cmd.from, f);
-                                start = LocalDateTime.of(d, Deadline.STORAGE_DEFAULT_TIME);
-                            }
-                            LocalDateTime end;
-                            String toTrim = cmd.to.trim();
-                            if (toTrim.contains("-")) {
-                                end = LocalDateTime.parse(toTrim);
-                            } else {
-                                int hh = Integer.parseInt(toTrim.substring(0, 2));
-                                int mm = Integer.parseInt(toTrim.substring(2, 4));
-                                LocalTime t = LocalTime.of(hh, mm);
-                                end = LocalDateTime.of(start.toLocalDate(), t);
-                            }
-                            Event evt = new Event(cmd.description, start, end);
-                            taskList.addTask(evt);
-                            storage.save(taskList.getAllTasks());
-                            ui.showAddTask(evt, taskList.size());
-                        } catch (DateTimeException e) {
+                            Event event = addEventTask(cmd);
+                            ui.showAddTask(event, taskList.size());
+                        } catch (DateTimeException
+                                 | NumberFormatException
+                                 | IndexOutOfBoundsException e) {
                             ui.showDateTimeErrorEvent();
                         }
                         break;
                     case "delete":
-                        if (cmd.taskNum < 1 || cmd.taskNum > taskList.size()) {
-                            throw new AdaException("This task does not exist. Please enter a valid task number.");
-                        }
-                        Task removed = taskList.removeTask(cmd.taskNum - 1);
-                        storage.save(taskList.getAllTasks());
+                        Task removed = deleteTask(cmd.taskNum);
                         ui.showDeleteTask(removed, taskList.size());
                         break;
                     case "find":
@@ -161,30 +116,33 @@ public class Ada {
             case "list":
                 return ui.getTaskListText(taskList.getAllTasks());
             case "mark":
-                validateTaskNumber(cmd.taskNum);
-                taskList.markDone(cmd.taskNum - 1);
-                Task markedTask = taskList.getTask(cmd.taskNum - 1);
-                storage.save(taskList.getAllTasks());
+                Task markedTask = markTask(cmd.taskNum);
                 return ui.getMarkDoneText(markedTask);
             case "unmark":
-                validateTaskNumber(cmd.taskNum);
-                taskList.markUndone(cmd.taskNum - 1);
-                Task unmarkedTask = taskList.getTask(cmd.taskNum - 1);
-                storage.save(taskList.getAllTasks());
+                Task unmarkedTask = unmarkTask(cmd.taskNum);
                 return ui.getMarkUndoneText(unmarkedTask);
             case "todo":
-                Todo todo = new Todo(cmd.description);
-                taskList.addTask(todo);
-                storage.save(taskList.getAllTasks());
+                Todo todo = addTodoTask(cmd.description);
                 return ui.getAddTaskText(todo, taskList.size());
             case "deadline":
-                return addDeadline(cmd);
+                try {
+                    Deadline deadline = addDeadlineTask(cmd);
+                    return ui.getAddTaskText(deadline, taskList.size());
+                } catch (DateTimeException e) {
+                    return ui.getDateTimeErrorDeadlineText();
+                }
             case "event":
-                return addEvent(cmd);
+                try {
+                    Event event = addEventTask(cmd);
+                    return ui.getAddTaskText(event, taskList.size());
+                } catch (DateTimeException
+                         | NumberFormatException
+                         | IndexOutOfBoundsException e) {
+                    return ui.getDateTimeErrorEventText();
+                }
+
             case "delete":
-                validateTaskNumber(cmd.taskNum);
-                Task removed = taskList.removeTask(cmd.taskNum - 1);
-                storage.save(taskList.getAllTasks());
+                Task removed = deleteTask(cmd.taskNum);
                 return ui.getDeleteTaskText(removed, taskList.size());
             case "find":
                 List<Task> matched = taskList.matchTasksByKeyword(cmd.keyword);
@@ -215,46 +173,34 @@ public class Ada {
         assert taskNum >= 1 && taskNum <= taskList.size() : "A validated task number must refer to an existing task";
     }
 
-    private String addDeadline(Parser.CommandInfo cmd) {
-        try {
-            LocalDateTime byDateTime = parseDateTime(
-                    cmd.by, Deadline.STORAGE_DEFAULT_TIME);
-            Deadline deadline = new Deadline(cmd.description, byDateTime);
-            taskList.addTask(deadline);
-            storage.save(taskList.getAllTasks());
-            return ui.getAddTaskText(deadline, taskList.size());
-        } catch (DateTimeException e) {
-            return ui.getDateTimeErrorDeadlineText();
-        }
+    private Deadline addDeadlineTask(Parser.CommandInfo cmd) {
+        LocalDateTime byDateTime = parseDateTime(
+                cmd.by, DateTimeFormats.DEFAULT_TIME);
+        Deadline deadline = new Deadline(cmd.description, byDateTime);
+        taskList.addTask(deadline);
+        storage.save(taskList.getAllTasks());
+        return deadline;
     }
 
-    private String addEvent(Parser.CommandInfo cmd) {
-        try {
-            LocalDateTime start = parseDateTime(
-                    cmd.from, Deadline.STORAGE_DEFAULT_TIME);
-            LocalDateTime end = parseEventEnd(cmd.to, start);
-
-            Event event = new Event(cmd.description, start, end);
-            taskList.addTask(event);
-            storage.save(taskList.getAllTasks());
-            return ui.getAddTaskText(event, taskList.size());
-        } catch (DateTimeException | NumberFormatException
-                 | IndexOutOfBoundsException e) {
-            return ui.getDateTimeErrorEventText();
-        }
+    private Event addEventTask(Parser.CommandInfo cmd) {
+        LocalDateTime start = parseDateTime(
+                cmd.from, DateTimeFormats.DEFAULT_TIME);
+        LocalDateTime end = parseEventEnd(cmd.to, start);
+        Event event = new Event(cmd.description, start, end);
+        taskList.addTask(event);
+        storage.save(taskList.getAllTasks());
+        return event;
     }
 
     private LocalDateTime parseDateTime(String value, LocalTime defaultTime) {
         assert value != null && defaultTime != null : "Date-time parsing requires a value and a fallback time";
         if (value.contains(" ")) {
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-            return LocalDateTime.parse(value, formatter);
+            return LocalDateTime.parse(
+                    value, DateTimeFormats.INPUT_DATE_TIME);
         }
 
-        DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate date = LocalDate.parse(value, formatter);
+        LocalDate date = LocalDate.parse(
+                value, DateTimeFormats.INPUT_DATE);
         return LocalDateTime.of(date, defaultTime);
     }
 
@@ -266,9 +212,8 @@ public class Ada {
 
         if (trimmedValue.contains("-")) {
             if (trimmedValue.contains(" ")) {
-                DateTimeFormatter formatter =
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
-                return LocalDateTime.parse(trimmedValue, formatter);
+                return LocalDateTime.parse(
+                        trimmedValue, DateTimeFormats.INPUT_DATE_TIME);
             }
             return LocalDateTime.parse(trimmedValue);
         }
@@ -277,6 +222,35 @@ public class Ada {
         int minute = Integer.parseInt(trimmedValue.substring(2, 4));
         LocalTime time = LocalTime.of(hour, minute);
         return LocalDateTime.of(start.toLocalDate(), time);
+    }
+    private Task markTask(int taskNum) throws AdaException {
+        validateTaskNumber(taskNum);
+        taskList.markDone(taskNum - 1);
+        Task task = taskList.getTask(taskNum - 1);
+        storage.save(taskList.getAllTasks());
+        return task;
+    }
+
+    private Task unmarkTask(int taskNum) throws AdaException {
+        validateTaskNumber(taskNum);
+        taskList.markUndone(taskNum - 1);
+        Task task = taskList.getTask(taskNum - 1);
+        storage.save(taskList.getAllTasks());
+        return task;
+    }
+
+    private Todo addTodoTask(String description) {
+        Todo todo = new Todo(description);
+        taskList.addTask(todo);
+        storage.save(taskList.getAllTasks());
+        return todo;
+    }
+
+    private Task deleteTask(int taskNum) throws AdaException {
+        validateTaskNumber(taskNum);
+        Task removed = taskList.removeTask(taskNum - 1);
+        storage.save(taskList.getAllTasks());
+        return removed;
     }
 
     /**
