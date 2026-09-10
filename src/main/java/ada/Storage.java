@@ -62,8 +62,11 @@ public class Storage {
      * @param tasks collection of tasks to be persisted
      */
     public void save(ArrayList<Task> tasks) {
+        assert tasks != null;
+
         try (FileWriter fw = new FileWriter(FILE_PATH)) {
             for (Task t : tasks) {
+                assert t != null;
                 fw.write(t.toFileFormat() + System.lineSeparator());
             }
             fw.close();

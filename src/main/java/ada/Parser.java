@@ -26,6 +26,7 @@ public class Parser {
          * @param command name of the recognized user command
          */
         public CommandInfo(String command) {
+            assert command != null : "A parsed command must have a command name";
             this.command = command;
         }
     }
@@ -39,6 +40,8 @@ public class Parser {
      * @throws AdaException when input format is invalid or required arguments are missing
      */
     public CommandInfo parse(String input) throws AdaException {
+        assert input != null : "The parser must receive a command string";
+
         if (input.equals("bye")) {
             return new CommandInfo("bye");
         }

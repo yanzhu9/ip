@@ -153,6 +153,8 @@ public class Ada {
         try {
             Parser.CommandInfo cmd = parser.parse(input);
 
+            assert cmd != null && cmd.command != null : "The parser must return a command with a command name";
+
             switch (cmd.command) {
             case "bye":
                 return ui.getByeText();
@@ -209,6 +211,8 @@ public class Ada {
             throw new AdaException(
                     "This task does not exist. Please enter a valid task number.");
         }
+
+        assert taskNum >= 1 && taskNum <= taskList.size() : "A validated task number must refer to an existing task";
     }
 
     private String addDeadline(Parser.CommandInfo cmd) {
@@ -241,6 +245,7 @@ public class Ada {
     }
 
     private LocalDateTime parseDateTime(String value, LocalTime defaultTime) {
+        assert value != null && defaultTime != null : "Date-time parsing requires a value and a fallback time";
         if (value.contains(" ")) {
             DateTimeFormatter formatter =
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
@@ -255,6 +260,8 @@ public class Ada {
 
     private LocalDateTime parseEventEnd(
             String value, LocalDateTime start) {
+        assert value != null && start != null : "Event-end parsing requires an end value and event start";
+
         String trimmedValue = value.trim();
 
         if (trimmedValue.contains("-")) {
