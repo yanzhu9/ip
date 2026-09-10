@@ -43,7 +43,7 @@ public class Ada {
                 String input = ui.readCommand();
                 Parser.CommandInfo cmd = parser.parse(input);
 
-                switch (cmd.command) {
+                switch (cmd.getCommand()) {
                     case "bye":
                         ui.showBye();
                         return;
@@ -51,15 +51,15 @@ public class Ada {
                         ui.showTaskList(taskList.getAllTasks());
                         break;
                     case "mark":
-                        Task markedTask = markTask(cmd.taskNum);
+                        Task markedTask = markTask(cmd.getTaskNum());
                         ui.showMarkDone(markedTask);
                         break;
                     case "unmark":
-                        Task unmarkedTask = unmarkTask(cmd.taskNum);
+                        Task unmarkedTask = unmarkTask(cmd.getTaskNum());
                         ui.showMarkUndone(unmarkedTask);
                         break;
                     case "todo":
-                        Todo todo = addTodoTask(cmd.description);
+                        Todo todo = addTodoTask(cmd.getDescription());
                         ui.showAddTask(todo, taskList.size());
                         break;
                     case "deadline":
@@ -81,11 +81,11 @@ public class Ada {
                         }
                         break;
                     case "delete":
-                        Task removed = deleteTask(cmd.taskNum);
+                        Task removed = deleteTask(cmd.getTaskNum());
                         ui.showDeleteTask(removed, taskList.size());
                         break;
                     case "find":
-                        String keyword = cmd.keyword;
+                        String keyword = cmd.getKeyword();
                         List<Task> matched = taskList.matchTasksByKeyword(keyword);
                         ui.showFindResult(matched);
                         break;
@@ -108,47 +108,47 @@ public class Ada {
         try {
             Parser.CommandInfo cmd = parser.parse(input);
 
-            assert cmd != null && cmd.command != null : "The parser must return a command with a command name";
+            assert cmd != null && cmd.getCommand() != null : "The parser must return a command with a command name";
 
-            switch (cmd.command) {
-            case "bye":
-                return ui.getByeText();
-            case "list":
-                return ui.getTaskListText(taskList.getAllTasks());
-            case "mark":
-                Task markedTask = markTask(cmd.taskNum);
-                return ui.getMarkDoneText(markedTask);
-            case "unmark":
-                Task unmarkedTask = unmarkTask(cmd.taskNum);
-                return ui.getMarkUndoneText(unmarkedTask);
-            case "todo":
-                Todo todo = addTodoTask(cmd.description);
-                return ui.getAddTaskText(todo, taskList.size());
-            case "deadline":
-                try {
-                    Deadline deadline = addDeadlineTask(cmd);
-                    return ui.getAddTaskText(deadline, taskList.size());
-                } catch (DateTimeException e) {
-                    return ui.getDateTimeErrorDeadlineText();
-                }
-            case "event":
-                try {
-                    Event event = addEventTask(cmd);
-                    return ui.getAddTaskText(event, taskList.size());
-                } catch (DateTimeException
-                         | NumberFormatException
-                         | IndexOutOfBoundsException e) {
-                    return ui.getDateTimeErrorEventText();
-                }
+            switch (cmd.getCommand()) {
+                case "bye":
+                    return ui.getByeText();
+                case "list":
+                    return ui.getTaskListText(taskList.getAllTasks());
+                case "mark":
+                    Task markedTask = markTask(cmd.getTaskNum());
+                    return ui.getMarkDoneText(markedTask);
+                case "unmark":
+                    Task unmarkedTask = unmarkTask(cmd.getTaskNum());
+                    return ui.getMarkUndoneText(unmarkedTask);
+                case "todo":
+                    Todo todo = addTodoTask(cmd.getDescription());
+                    return ui.getAddTaskText(todo, taskList.size());
+                case "deadline":
+                    try {
+                        Deadline deadline = addDeadlineTask(cmd);
+                        return ui.getAddTaskText(deadline, taskList.size());
+                    } catch (DateTimeException e) {
+                        return ui.getDateTimeErrorDeadlineText();
+                    }
+                case "event":
+                    try {
+                        Event event = addEventTask(cmd);
+                        return ui.getAddTaskText(event, taskList.size());
+                    } catch (DateTimeException
+                            | NumberFormatException
+                            | IndexOutOfBoundsException e) {
+                        return ui.getDateTimeErrorEventText();
+                    }
 
-            case "delete":
-                Task removed = deleteTask(cmd.taskNum);
-                return ui.getDeleteTaskText(removed, taskList.size());
-            case "find":
-                List<Task> matched = taskList.matchTasksByKeyword(cmd.keyword);
-                return ui.getFindResultText(matched);
-            default:
-                return ui.getUnknownCommandText();
+                case "delete":
+                    Task removed = deleteTask(cmd.getTaskNum());
+                    return ui.getDeleteTaskText(removed, taskList.size());
+                case "find":
+                    List<Task> matched = taskList.matchTasksByKeyword(cmd.getKeyword());
+                    return ui.getFindResultText(matched);
+                default:
+                    return ui.getUnknownCommandText();
             }
         } catch (AdaException e) {
             return e.getMessage();
@@ -175,8 +175,8 @@ public class Ada {
 
     private Deadline addDeadlineTask(Parser.CommandInfo cmd) {
         LocalDateTime byDateTime = parseDateTime(
-                cmd.by, DateTimeFormats.DEFAULT_TIME);
-        Deadline deadline = new Deadline(cmd.description, byDateTime);
+                cmd.getBy(), DateTimeFormats.DEFAULT_TIME);
+        Deadline deadline = new Deadline(cmd.getDescription(), byDateTime);
         taskList.addTask(deadline);
         storage.save(taskList.getAllTasks());
         return deadline;
@@ -184,9 +184,9 @@ public class Ada {
 
     private Event addEventTask(Parser.CommandInfo cmd) {
         LocalDateTime start = parseDateTime(
-                cmd.from, DateTimeFormats.DEFAULT_TIME);
-        LocalDateTime end = parseEventEnd(cmd.to, start);
-        Event event = new Event(cmd.description, start, end);
+                cmd.getFrom(), DateTimeFormats.DEFAULT_TIME);
+        LocalDateTime end = parseEventEnd(cmd.getTo(), start);
+        Event event = new Event(cmd.getDescription(), start, end);
         taskList.addTask(event);
         storage.save(taskList.getAllTasks());
         return event;

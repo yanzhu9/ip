@@ -3,6 +3,9 @@ package ada;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * The response message for each type of input
+ */
 public class Ui {
     private static final String LINE = "---------------------------------------------------";
     private static final String BANNER =
@@ -23,6 +26,9 @@ public class Ui {
         System.out.println(LINE);
     }
 
+    /**
+     * The welcome message when starting the chatbot
+     */
     public void showWelcome() {
         System.out.println(LINE);
         System.out.print(BANNER);
@@ -39,6 +45,9 @@ public class Ui {
         showSection(getByeText());
     }
 
+    /**
+     * The printing format for list option
+     */
     public void showTaskList(List<Task> tasks) {
         System.out.println(LINE);
         System.out.println("Here are the tasks in your list:");
@@ -77,11 +86,17 @@ public class Ui {
         showSection(getUnknownCommandText());
     }
 
+    /**
+     * The error message for invalid date format in deadline object
+     */
     public void showDateTimeErrorDeadline() {
         System.out.println("Oops! Invalid date format.");
         System.out.println("Please use format yyyy-MM-dd (e.g. 2026-08-27) or yyyy-MM-dd HHmm (e.g. 2026-08-27 1800)");
     }
 
+    /**
+     * The error message for invalid date format in event object
+     */
     public void showDateTimeErrorEvent() {
         System.out.println("Oops! Invalid date format.");
         System.out.println("Please use format yyyy-MM-dd or yyyy-MM-dd HHmm (e.g. 2026-08-27 1800) for /from.");

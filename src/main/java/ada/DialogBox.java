@@ -65,20 +65,20 @@ public class DialogBox extends HBox {
         }
 
         switch (commandType) {
-        case "todo":
-        case "deadline":
-        case "event":
-            dialog.getStyleClass().add("add-label");
-            break;
-        case "mark":
-        case "unmark":
-            dialog.getStyleClass().add("marked-label");
-            break;
-        case "delete":
-            dialog.getStyleClass().add("delete-label");
-            break;
-        default:
-            // Keep the default reply style.
+            case "todo":
+            case "deadline":
+            case "event":
+                dialog.getStyleClass().add("add-label");
+                break;
+            case "mark":
+            case "unmark":
+                dialog.getStyleClass().add("marked-label");
+                break;
+            case "delete":
+                dialog.getStyleClass().add("delete-label");
+                break;
+            default:
+                // Keep the default reply style.
         }
     }
 

@@ -11,13 +11,13 @@ public class Parser {
      * Contains command name and corresponding extracted argument fields.
      */
     public static class CommandInfo {
-        public String command;
-        public int taskNum;
-        public String description;
-        public String by;
-        public String from;
-        public String to;
-        public String keyword;
+        private String command;
+        private int taskNum;
+        private String description;
+        private String by;
+        private String from;
+        private String to;
+        private String keyword;
 
         /**
          * Creates a CommandInfo holding only the command name.
@@ -28,6 +28,34 @@ public class Parser {
         public CommandInfo(String command) {
             assert command != null : "A parsed command must have a command name";
             this.command = command;
+        }
+
+        public String getCommand() {
+            return this.command;
+        }
+
+        public int getTaskNum() {
+            return this.taskNum;
+        }
+
+        public String getDescription() {
+            return this.description;
+        }
+
+        public String getBy() {
+            return this.by;
+        }
+
+        public String getFrom() {
+            return this.from;
+        }
+
+        public String getTo() {
+            return this.to;
+        }
+
+        public String getKeyword() {
+            return this.keyword;
         }
     }
 

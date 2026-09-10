@@ -11,22 +11,22 @@ public class ParserTest {
     @Test
     void parse_bye_returnsByeCommand() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("bye");
-        assertEquals("bye", ci.command);
+        assertEquals("bye", ci.getCommand());
     }
 
     //list
     @Test
     void parse_list_returnsListCommand() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("list");
-        assertEquals("list", ci.command);
+        assertEquals("list", ci.getCommand());
     }
 
     //valid todo
     @Test
     void parse_validTodo_returnsTodoCommand() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("todo buy book");
-        assertEquals("todo", ci.command);
-        assertEquals("buy book", ci.description);
+        assertEquals("todo", ci.getCommand());
+        assertEquals("buy book", ci.getDescription());
     }
 
     //todo with no task description
@@ -39,8 +39,8 @@ public class ParserTest {
     @Test
     void parse_validMark_returnsMarkCommand() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("mark 2");
-        assertEquals("mark", ci.command);
-        assertEquals(2, ci.taskNum);
+        assertEquals("mark", ci.getCommand());
+        assertEquals(2, ci.getTaskNum());
     }
 
     //mark with not number
@@ -59,9 +59,9 @@ public class ParserTest {
     @Test
     void parse_validDeadline_returnsDeadlineCommand() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("deadline essay /by friday");
-        assertEquals("deadline", ci.command);
-        assertEquals("essay", ci.description);
-        assertEquals("friday", ci.by);
+        assertEquals("deadline", ci.getCommand());
+        assertEquals("essay", ci.getDescription());
+        assertEquals("friday", ci.getBy());
     }
 
     //deadline lack /by
@@ -74,10 +74,10 @@ public class ParserTest {
     @Test
     void parse_validEvent_returnsEventCommand() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("event team meeting /from mon /to fri");
-        assertEquals("event", ci.command);
-        assertEquals("team meeting", ci.description);
-        assertEquals("mon", ci.from);
-        assertEquals("fri", ci.to);
+        assertEquals("event", ci.getCommand());
+        assertEquals("team meeting", ci.getDescription());
+        assertEquals("mon", ci.getFrom());
+        assertEquals("fri", ci.getTo());
     }
 
     // event lack /to
@@ -90,14 +90,14 @@ public class ParserTest {
     @Test
     void parse_validDelete_returnsDeleteCommand() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("delete 3");
-        assertEquals("delete", ci.command);
-        assertEquals(3, ci.taskNum);
+        assertEquals("delete", ci.getCommand());
+        assertEquals(3, ci.getTaskNum());
     }
 
     //invalid command
     @Test
     void parse_unknownCommand_returnUnknown() throws AdaException {
         Parser.CommandInfo ci = parserObj.parse("helloworld");
-        assertEquals("unknown", ci.command);
+        assertEquals("unknown", ci.getCommand());
     }
 }

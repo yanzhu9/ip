@@ -2,7 +2,7 @@ package ada;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;                //change String to lower case
+import java.util.Locale;
 
 /**
  * Maintains the in‑memory collection of tasks.
@@ -63,7 +63,7 @@ public class TaskList {
      * @return the Task at that position
      */
     public Task getTask(int index) {
-        assert index>=0 && index < tasks.size();
+        assert index >= 0 && index < tasks.size();
         return tasks.get(index);
     }
 
