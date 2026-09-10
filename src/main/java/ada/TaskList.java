@@ -17,6 +17,7 @@ public class TaskList {
      * @param initialTasks list of tasks loaded from storage
      */
     public TaskList(ArrayList<Task> initialTasks) {
+        assert initialTasks != null : "A task list must have a backing collection";
         this.tasks = initialTasks;
     }
 
@@ -26,7 +27,13 @@ public class TaskList {
      * @param task the task object to be added
      */
     public void addTask(Task task) {
+        assert task != null : "The task list must not contain null tasks";
+
+        int oldSize = tasks.size();
         tasks.add(task);
+
+        assert tasks.size() == oldSize + 1 : "Adding one task must increase the list size by one";
+        assert tasks.get(oldSize) == task : "The added task must be stored at the end of the list";
     }
 
     /**
@@ -36,7 +43,16 @@ public class TaskList {
      * @return the removed Task instance
      */
     public Task removeTask(int index) {
-        return tasks.remove(index);
+        assert index >= 0 && index < tasks.size() : "The index passed to removeTask must identify a task";
+
+        int oldSize = tasks.size();
+        Task expected = tasks.get(index);
+        Task removed = tasks.remove(index);
+
+        assert removed == expected;
+        assert tasks.size() == oldSize - 1;
+
+        return removed;
     }
 
     /**
@@ -46,6 +62,7 @@ public class TaskList {
      * @return the Task at that position
      */
     public Task getTask(int index) {
+        assert index>=0 && index < tasks.size();
         return tasks.get(index);
     }
 
@@ -93,6 +110,7 @@ public class TaskList {
      * @return matched task list
      */
     public List<Task> matchTasksByKeyword(String keyword) {
+        assert keyword != null : "A keyword is required for task searching";
         List<Task> matchedTasks = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
 
