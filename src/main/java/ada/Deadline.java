@@ -24,6 +24,15 @@ public class Deadline extends Task {
     }
 
     /**
+     * Returns the deadline date and time.
+     *
+     * @return deadline date and time
+     */
+    public LocalDateTime getBy() {
+        return by;
+    }
+
+    /**
      * Returns human‑readable string for console display.
      * Prefixes "[D]" and appends formatted due‑date information.
      *

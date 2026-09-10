@@ -108,6 +108,40 @@ public class Ui {
     }
 
     /**
+     * Shows tasks using the custom sorted format.
+     *
+     * @param tasks sorted tasks to display
+     */
+    public void showSortedTaskList(List<Task> tasks) {
+        showSection(getSortedTaskListText(tasks));
+    }
+
+    /**
+     * Returns the custom sorted list format.
+     *
+     * @param tasks sorted tasks
+     * @return formatted sorted task list
+     */
+    public String getSortedTaskListText(List<Task> tasks) {
+        StringBuilder result = new StringBuilder(
+                "Here are the sorted tasks in your list:");
+
+        for (int i = 0; i < tasks.size(); i++) {
+            if (i > 0
+                    && tasks.get(i).isDone()
+                    != tasks.get(i - 1).isDone()) {
+                result.append("\n");
+            }
+
+            result.append("\n")
+                    .append(i + 1)
+                    .append(". ")
+                    .append(tasks.get(i));
+        }
+
+        return result.toString();
+    }
+    /**
      * Returns the welcome message.
      *
      * @return welcome message

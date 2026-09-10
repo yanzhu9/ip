@@ -73,8 +73,13 @@ public class Parser {
         if (input.equals("bye")) {
             return new CommandInfo("bye");
         }
+
         if (input.equals("list")) {
             return new CommandInfo("list");
+        }
+
+        if (input.equals("sort")) {
+            return new CommandInfo("sort");
         }
 
         if (input.startsWith("mark")) {

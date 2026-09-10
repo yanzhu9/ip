@@ -95,6 +95,13 @@ public class TaskList {
     }
 
     /**
+     * Sorts the internal task list according to the custom sort rules.
+     */
+    public void sortTasks() {
+        tasks.sort(new TaskComparator());
+    }
+
+    /**
      * Returns a brand‑new copy of the internal task list.
      * External code cannot modify the original stored collection through this returned list.
      *

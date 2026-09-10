@@ -89,6 +89,11 @@ public class Ada {
                         List<Task> matched = taskList.matchTasksByKeyword(keyword);
                         ui.showFindResult(matched);
                         break;
+                    case "sort":
+                        taskList.sortTasks();
+                        storage.save(taskList.getAllTasks());
+                        ui.showSortedTaskList(taskList.getAllTasks());
+                        break;
                     default:
                         ui.showUnknownCommand();
                 }
@@ -147,6 +152,10 @@ public class Ada {
                 case "find":
                     List<Task> matched = taskList.matchTasksByKeyword(cmd.getKeyword());
                     return ui.getFindResultText(matched);
+                case "sort":
+                    taskList.sortTasks();
+                    storage.save(taskList.getAllTasks());
+                    return ui.getSortedTaskListText(taskList.getAllTasks());
                 default:
                     return ui.getUnknownCommandText();
             }
