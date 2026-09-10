@@ -21,6 +21,13 @@ public class ParserTest {
         assertEquals("list", ci.getCommand());
     }
 
+    //valid sort
+    @Test
+    void parse_sort_returnsSortCommand() throws AdaException {
+        Parser.CommandInfo command = parserObj.parse("sort");
+        assertEquals("sort", command.getCommand());
+    }
+
     //valid todo
     @Test
     void parse_validTodo_returnsTodoCommand() throws AdaException {
